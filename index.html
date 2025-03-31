@@ -1,31 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RegressionMadeSimple</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 2rem;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #222;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    .badges {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    pre {
+      background: #eee;
+      padding: 1rem;
+      overflow-x: auto;
+      border-radius: 6px;
+      max-width: 100%;
+    }
+
+    .content {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .links {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h1>RegressionMadeSimple</h1>
-  <p>A minimalist ML backdoor to sklearn machine learning.</p>
-  <pre>
-  import regressionmadesimple as rms
-  model = rms.Linear(df, df['X'], df['y']) # Assuming you have the dataset df set up.
-  model.predict([[3], [10]])
-  </pre>
-  <p><a href="https://github.com/Unknownuserfrommars/regressionmadesimple">View on GitHub</a></p>
-  <!-- PyPI Version -->
-  <img src="https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square" alt="PyPI Version">
-  
-  <!-- PyPI Monthly Downloads -->
-  <img src="https://img.shields.io/pypi/dm/regressionmadesimple?label=Downloads&style=flat-square" alt="Monthly Downloads">
-  
-  <!-- GitHub Stars -->
-  <img src="https://img.shields.io/github/stars/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="GitHub Stars">
-  
-  <!-- License -->
-  <img src="https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="License">
-  
-  <!-- Python Version -->
-  <img src="https://img.shields.io/pypi/pyversions/regressionmadesimple?style=flat-square" alt="Python Version">
-  <p><a href='changelog.html'>Changelog</a></p>
+  <div class="content">
+    <header>
+      <h1>RegressionMadeSimple</h1>
+      <p class="tagline">A minimalist machine learning backdoor to sklearn. Just import and go.</p>
+      <div class="badges">
+        <img src="https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square" alt="PyPI Version">
+        <img src="https://img.shields.io/pypi/dm/regressionmadesimple?label=Downloads&style=flat-square" alt="Monthly Downloads">
+        <img src="https://img.shields.io/github/stars/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="GitHub Stars">
+        <img src="https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="License">
+        <img src="https://img.shields.io/pypi/pyversions/regressionmadesimple?style=flat-square" alt="Python Version">
+      </div>
+    </header>
+
+    <section>
+      <h2>🚀 Quickstart</h2>
+      <pre><code>import regressionmadesimple as rms
+
+model = rms.Linear(df, colX='X', colY='y')
+model.predict([[3], [10]])
+model.summary()</code></pre>
+    </section>
+
+    <div class="links">
+      <p>
+        <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">📦 View on GitHub</a> |
+        <a href="https://pypi.org/project/regressionmadesimple">📥 View on PyPI</a> |
+        <a href="changelog.html">📝 Changelog</a>
+      </p>
+    </div>
+  </div>
 </body>
 </html>
