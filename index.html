@@ -5,49 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RegressionMadeSimple</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 2rem;
-      color: #333;
+    :root {
+      --bg: #f8f9fa;
+      --fg: #222;
+      --secondary: #666;
+      --card: #eee;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
+    body.dark {
+      --bg: #121212;
+      --fg: #f1f1f1;
+      --secondary: #aaa;
+      --card: #1e1e1e;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    nav {
+      background: var(--card);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .nav-links a {
+      margin-right: 1rem;
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .content {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
     }
 
     h1 {
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
-      color: #222;
     }
 
     .tagline {
       font-size: 1.2rem;
-      color: #666;
+      color: var(--secondary);
     }
 
     .badges {
       margin-top: 1rem;
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 10px;
     }
 
     pre {
-      background: #eee;
+      background: var(--card);
       padding: 1rem;
-      overflow-x: auto;
       border-radius: 6px;
-      max-width: 100%;
-    }
-
-    .content {
-      max-width: 800px;
-      margin: auto;
+      overflow-x: auto;
     }
 
     .links {
@@ -55,29 +83,38 @@
       text-align: center;
     }
 
-    a {
-      color: #0366d6;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
+    .toggle {
+      cursor: pointer;
+      background: none;
+      border: 1px solid var(--fg);
+      border-radius: 6px;
+      padding: 0.25rem 0.75rem;
+      color: var(--fg);
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
+  <nav>
+    <div class="nav-links">
+      <a href="index.html">🏠 Main</a>
+      <a href="changelog.html">📝 Changelog</a>
+      <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">📦 GitHub</a>
+    </div>
+    <button class="toggle" onclick="toggleDarkMode()">🌙 Dark</button>
+  </nav>
+
   <div class="content">
-    <header>
-      <h1>RegressionMadeSimple</h1>
-      <p class="tagline">A minimalist machine learning backdoor to sklearn. Just import and go.</p>
-      <div class="badges">
-        <img src="https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square" alt="PyPI Version">
-        <img src="https://img.shields.io/pypi/dm/regressionmadesimple?label=Downloads&style=flat-square" alt="Monthly Downloads">
-        <img src="https://img.shields.io/github/stars/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="GitHub Stars">
-        <img src="https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="License">
-        <img src="https://img.shields.io/pypi/pyversions/regressionmadesimple?style=flat-square" alt="Python Version">
-      </div>
-    </header>
+    <h1>RegressionMadeSimple</h1>
+    <p class="tagline">A minimalist machine learning backdoor to sklearn. Just import and go.</p>
+
+    <div class="badges">
+      <img src="https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square" alt="PyPI Version">
+      <img src="https://img.shields.io/pypi/dm/regressionmadesimple?label=Downloads&style=flat-square" alt="Monthly Downloads">
+      <img src="https://img.shields.io/github/stars/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="GitHub Stars">
+      <img src="https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="License">
+      <img src="https://img.shields.io/pypi/pyversions/regressionmadesimple?style=flat-square" alt="Python Version">
+    </div>
 
     <section>
       <h2>🚀 Quickstart</h2>
@@ -90,11 +127,15 @@ model.summary()</code></pre>
 
     <div class="links">
       <p>
-        <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">📦 View on GitHub</a> |
-        <a href="https://pypi.org/project/regressionmadesimple">📥 View on PyPI</a> |
-        <a href="changelog.html">📝 Changelog</a>
+        <a href="https://pypi.org/project/regressionmadesimple">📥 View on PyPI</a>
       </p>
     </div>
   </div>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+  </script>
 </body>
 </html>
