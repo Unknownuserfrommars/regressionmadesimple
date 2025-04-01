@@ -1,7 +1,9 @@
 # RegressionMadeSimple (RMS)
 
 > **"A minimalist ML backdoor to sklearn. Just import `rms` and go."**
-
+![PyPI](https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/regressionmadesimple?label=Downloads&style=flat-square)
+![License](https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square)
 ---
 
 ## 🚀 Quickstart
@@ -10,7 +12,7 @@
 import regressionmadesimple as rms
 
 # Load dataset
-df = rms.preworks.readcsv("./your_data.csv")
+df = rms.Preworks.readcsv("./your_data.csv")
 
 # Train a linear regression model
 model = rms.Linear(dataset=df, colX="feature", colY="target")
@@ -19,7 +21,7 @@ model = rms.Linear(dataset=df, colX="feature", colY="target")
 predicted = model.predict([[5.2], [3.3]])
 
 # Plot prediction vs. test
-model.plotpredict([[5.2], [3.3]], predicted).show()
+model.plot_predict([[5.2], [3.3]], predicted).show()
 ```
 
 ---
@@ -31,7 +33,13 @@ model.plotpredict([[5.2], [3.3]], predicted).show()
 - 🔬 Designed for quick prototyping and educational use
 - 🧰 Utility functions via `preworks`:
   - `readcsv(path)` — load CSV
-  - `crd(...)` — create random datasets (for demos)
+  - `create_random_dataset(...)` — create random datasets (for demos)
+
+---
+
+## Project LINK
+https://unknownuserfrommars.github.io/regressionmadesimple/
+#### PS: Changelog also can be accessed from there. (still actively developing)
 
 ---
 
@@ -76,14 +84,16 @@ Coming soon under a `/tests` folder using `pytest`
 ---
 
 ## 🧠 Author
-**Unknownuserfrommars** — built with 💡, ❤️, and `while True:` in VSCode.
+**Unknownuserfrommars** — built with 💡, ❤️, and `while True:` in VSCode and PyCharm.
+
+###### kind note: ignore that last statement :)
 
 ---
 
 ## 🌌 Ideas for Future Versions
 
 - `Logistic()` and `DecisionTree()` models
-- `.summary()` for all models
+- `.summary()` for **all** models
 - `rms.fit(df, target="y", model="linear")` one-liner
 - Export/save models
 - Visual explainability (feature importance, SHAP)
@@ -91,3 +101,4 @@ Coming soon under a `/tests` folder using `pytest`
 ---
 
 ## ⭐ Star this project if you like lazy ML. No boilerplate, just vibes.
+### Also: Buy me a coffee (maybe) coming soon.
