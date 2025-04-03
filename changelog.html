@@ -1,12 +1,18 @@
+
+---
+
+## 🌐 `changelog.html` (updated for v1.2.0)
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Changelog – RegressionMadeSimple v1.1.1</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog – RegressionMadeSimple</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: #f9f9f9;
       padding: 2rem;
       max-width: 800px;
@@ -27,26 +33,30 @@
       font-weight: bold;
       margin-top: 1.5rem;
     }
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
   <h1>📦 Changelog – RegressionMadeSimple</h1>
-  <div class="version">Version 1.1.1 <small>(Released: March 2025)</small></div>
+  <div class="version">Version 1.2.0 <small>(Released: April 2025)</small></div>
 
   <div class="label">✨ New Features</div>
   <ul>
-    <li>Added <code>.summary()</code> method to <code>Linear</code> model</li>
-    <li>Support for pre-split data in <code>Linear</code> constructor via <code>X_train</code>, <code>y_train</code>, <code>X_test</code>, <code>y_test</code></li>
-    <li>Cleaner, more flexible <code>preworks</code> utilities</li>
+    <li>🔧 Introduced <code>rms.options</code> for global configuration using <code>SimpleNamespace</code></li>
+    <li>🧠 Added support for <code>.save()</code>, <code>.load()</code>, and <code>.reset()</code> for RMS options</li>
+    <li>🧪 Configurable <code>Linear</code> constructor: honors <code>rms.options.training</code> + accepts pre-split data</li>
   </ul>
 
   <div class="label">🔧 Improvements</div>
   <ul>
-    <li>Streamlined logic in <code>Linear</code> and <code>preworks</code> using real-world usage experience</li>
-    <li>Renamed/reorganized function names for clarity</li>
-    <li>Improved error handling for <code>.plot()</code> and <code>.mse()</code> when test data is unavailable</li>
+    <li>Internal logic streamlined to use config fallbacks</li>
+    <li>Better defaults, simplified structure for future models</li>
+    <li>Updated <code>__init__.py</code> to expose config functions</li>
   </ul>
 
-  <p style="margin-top:2rem">View the project on <a href="https://github.com/yourusername/regressionmadesimple">GitHub</a></p>
+  <p style="margin-top:2rem">View the project on <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">GitHub</a></p>
 </body>
 </html>
