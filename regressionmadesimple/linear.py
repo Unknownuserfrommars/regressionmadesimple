@@ -1,4 +1,5 @@
 from .base_class import BaseModel
+from .options import options
 
 import sklearn.model_selection as ms # Avoid naming conflicts with the train_test_split
 from sklearn.linear_model import LinearRegression
@@ -25,11 +26,12 @@ class Linear(BaseModel):
         self.dataset = dataset
         self.colX = colX
         self.colY = colY
-        self.testsize = testsize if train_test_split else None
-        self.randomstate = randomstate if train_test_split else None
+        self.testsize = testsize if testsize is not None else options.training.test_size
+        self.randomstate = randomstate if randomstate is not None else options.training.random_state
+        self.use_split = train_test_split if train_test_split is not None else options.linear.auto_split
         self.X = pd.DataFrame(dataset[colX])
         self.y = pd.DataFrame(dataset[colY])
-        if train_test_split:
+        if self.use_split:
             self.X_train, self.X_test, self.y_train, self.y_test = ms.train_test_split(self.X, self.y, test_size=self.testsize, random_state=self.randomstate)
             self.model = LinearRegression()
             self.model.fit(self.X_train, self.y_train)
@@ -55,9 +57,12 @@ class Linear(BaseModel):
         """
         if not hasattr(self, 'y_pred_tts'):
             raise Exception('Please set the `train_test_split` parameter to True in the constructor to use this function.')
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=self.X_test, y=self.y_test, mode='markers', name='Test Data'))
-        fig.add_trace(go.Scatter(x=self.X_test, y=self.y_pred_tts, mode='lines', name='Prediction'))
+        if options.plot.backend == 'plotly':
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=self.X_test, y=self.y_test, mode='markers', name='Test Data'))
+            fig.add_trace(go.Scatter(x=self.X_test, y=self.y_pred_tts, mode='lines', name='Prediction'))
+        else:
+            raise NotImplementedError(f"Plotting backend {options.plot.backend} is not implemented yet.")
         return fig
     
     def predict(self, X_new: np.ndarray|pd.DataFrame):
@@ -67,9 +72,12 @@ class Linear(BaseModel):
         """
         Note that this only returns the plotly figure. Please use fig.show() yourself.
         """
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=X_new, y=y_new, mode='markers', name='New Data'))
-        fig.add_trace(go.Scatter(x=X_new, y=self.predict(X_new), mode='lines', name='Prediction'))
+        if options.plot.backend == 'plotly':
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=X_new, y=y_new, mode='markers', name='New Data'))
+            fig.add_trace(go.Scatter(x=X_new, y=self.predict(X_new), mode='lines', name='Prediction'))
+        else:
+            raise NotImplementedError(f"Plotting backend {options.plot.backend} is not implemented yet.")
         return fig
     
     def mse(self):

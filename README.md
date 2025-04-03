@@ -1,9 +1,12 @@
 # RegressionMadeSimple (RMS)
 
-> **"A minimalist ML backdoor to sklearn. Just import `rms` and go."**
-![PyPI](https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/regressionmadesimple?label=Downloads&style=flat-square)
-![License](https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square)
+[![PyPI](https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square)](https://pypi.org/project/regressionmadesimple/)
+[![Downloads](https://img.shields.io/pypi/dm/regressionmadesimple?style=flat-square)](https://pypi.org/project/regressionmadesimple/)
+[![License](https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square)](https://github.com/Unknownuserfrommars/regressionmadesimple/blob/main/LICENSE)
+[![Python Version](https://img.shields.io/pypi/pyversions/regressionmadesimple?style=flat-square)](https://pypi.org/project/regressionmadesimple/)
+
+> A minimalist machine learning wrapper for lazy/skilled devs who want to skip the boilerplate. Built as a clean backdoor to `scikit-learn`.
+
 ---
 
 ## 🚀 Quickstart
@@ -34,6 +37,12 @@ model.plot_predict([[5.2], [3.3]], predicted).show()
 - 🧰 Utility functions via `preworks`:
   - `readcsv(path)` — load CSV
   - `create_random_dataset(...)` — create random datasets (for demos)
+- One-liner regression setup
+- `.summary()` and `.plot()` for quick insight
+- Global config system: `rms.options`
+- Accepts pre-split data (X_train, y_train, etc.)
+- Easily extendable — logistic, trees, etc. coming soon
+- MIT Licensed
 
 ---
 
@@ -83,22 +92,20 @@ Coming soon under a `/tests` folder using `pytest`
 
 ---
 
-## 🧠 Author
-**Unknownuserfrommars** — built with 💡, ❤️, and `while True:` in VSCode and PyCharm.
-
-###### kind note: ignore that last statement :)
+## 🛠 Author
+Made with ❤️ by [Unknownuserfrommars](github.com/Unknownuserfrommars)
+:)
 
 ---
 
 ## 🌌 Ideas for Future Versions
 
 - `Logistic()` and `DecisionTree()` models
-- `.summary()` for **all** models
+- `.summary()` for *all* models
 - `rms.fit(df, target="y", model="linear")` one-liner
 - Export/save models
 - Visual explainability (feature importance, SHAP)
 
 ---
 
-## ⭐ Star this project if you like lazy ML. No boilerplate, just vibes.
-### Also: Buy me a coffee (maybe) coming soon.
+## ⭐ Star this project if you like lazy ML.
