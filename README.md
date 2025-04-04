@@ -48,7 +48,7 @@ model.plot_predict([[5.2], [3.3]], predicted).show()
 
 ## Project LINK
 https://unknownuserfrommars.github.io/regressionmadesimple/
-#### PS: Changelog also can be accessed from there. (still actively developing)
+> PS: Changelog also can be accessed from there
 
 ---
 
@@ -102,7 +102,6 @@ Made with ❤️ by [Unknownuserfrommars](github.com/Unknownuserfrommars)
 
 - `Logistic()` and `DecisionTree()` models
 - `.summary()` for *all* models
-- `rms.fit(df, target="y", model="linear")` one-liner
 - Export/save models
 - Visual explainability (feature importance, SHAP)
 
