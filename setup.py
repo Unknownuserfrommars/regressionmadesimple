@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="regressionmadesimple",
-    version="1.3.0",
+    version="1.4.0",
     description="Minimalist ML toolkit wrapping sklearn for quick prototyping. Just `import rms` and go.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

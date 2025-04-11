@@ -40,7 +40,7 @@ model.plot_predict([[5.2], [3.3]], predicted).show()
 - One-liner regression setup
 - `.summary()` and `.plot()` for quick insight
 - Global config system: `rms.options`
-- Accepts pre-split data (X_train, y_train, etc.)
+- Accepts pre-split data (`X_train`, `y_train`, etc.)
 - Easily extendable — logistic, trees, etc. coming soon
 - MIT Licensed
 
