@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="regressionmadesimple",
-    version="1.4.0",
-    description="Minimalist ML toolkit wrapping sklearn for quick prototyping. Just `import rms` and go.",
+    version="1.4.1",
+    description="Minimalist machine learning toolkit that wraps `skikit-learn` for quick prototyping. Just `import rms` and go.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author="Unknownuserfrommars",
@@ -17,6 +17,7 @@ setup(
         "numpy",
         "plotly",
         "scikit-learn",
+        'matplotlib'
     ],
     include_package_data=True,
     classifiers=[
@@ -24,7 +25,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Intended Audience :: Developers",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Scientific/Engineering",
     ],
-    keywords="machine-learning regression sklearn wrapper linear",
+    keywords="machine-learning regression sklearn wrapper",
 )

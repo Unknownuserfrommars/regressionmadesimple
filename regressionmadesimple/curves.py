@@ -1,3 +1,6 @@
+# Still in early dev version. Unstable and not ready for production.
+# Few tests have been done.
+
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression

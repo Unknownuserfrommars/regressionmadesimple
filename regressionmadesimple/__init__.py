@@ -1,5 +1,5 @@
 from .linear import Linear
-from .utils_preworks import Preworks
+from .utils_preworks import Preworks, Logger
 from .options import options, save_options, load_options, reset_options
 from .wrapper import LinearRegressionModel
 from .quadratic import Quadratic
@@ -19,4 +19,5 @@ __all__ = [
     "Quadratic",
     "Cubic",
     "CustomCurve",
+    'Logger',
 ]

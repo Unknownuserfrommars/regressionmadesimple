@@ -9,6 +9,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 import warnings
+from .utils_preworks import Logger
 
 class Linear(BaseModel):
     def __init__(self, dataset: pd.Series|pd.DataFrame, colX:str, colY:str, testsize=0.15, randomstate:int=1, train_test_split:bool=True, X_train=None, y_train=None, X_test=None, y_test=None):
@@ -61,9 +62,18 @@ class Linear(BaseModel):
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=self.X_test, y=self.y_test, mode='markers', name='Test Data'))
             fig.add_trace(go.Scatter(x=self.X_test, y=self.y_pred_tts, mode='lines', name='Prediction'))
+            return fig
+        elif options.plot.backend == 'matplotlib':
+            import matplotlib.pyplot as plt
+            fig, ax = plt.subplots()
+            ax.scatter(self.X_test, self.y_test, color='blue', label='Test Data')
+            ax.plot(self.X_test, self.y_pred_tts, color='red', label='Prediction')
+            ax.set_xlabel(self.colX)
+            ax.set_ylabel(self.colY)
+            ax.legend()
+            return fig
         else:
             raise NotImplementedError(f"Plotting backend {options.plot.backend} is not implemented yet.")
-        return fig
     
     def predict(self, X_new: np.ndarray|pd.DataFrame):
         return self.model.predict(X_new)

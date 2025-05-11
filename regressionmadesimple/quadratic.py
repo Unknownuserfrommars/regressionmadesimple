@@ -79,6 +79,16 @@ class Quadratic(BaseModel):
             fig.add_trace(go.Scatter(x=self.X_test[self.colX], y=self.y_pred_tts, mode='lines', name='Predicted Data'))
             fig.update_layout(title=f'Quadratic Regression Model - Train and Test Data', xaxis_title=self.colX, yaxis_title=self.colY)
             return fig
+        elif options.plot.backend == 'matplotlib':
+            import matplotlib.pyplot as plt
+            fig, ax = plt.subplots()
+            ax.scatter(self.X_train, self.y_train, color='blue', label='Train Data')
+            ax.scatter(self.X_test, self.y_test, color='green', label='Test Data')
+            ax.plot(self.X_test, self.y_pred_tts, color='red', label='Prediction')
+            ax.set_xlabel(self.colX)
+            ax.set_ylabel(self.colY)
+            ax.legend()
+            return fig
         else:
             raise NotImplementedError(f"Plotting backend {options.plot.backend} is not implemented yet.")
     

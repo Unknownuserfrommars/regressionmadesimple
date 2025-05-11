@@ -79,6 +79,16 @@ class Cubic(BaseModel):
             fig.add_trace(go.Scatter(x=self.X_test[self.colX], y=self.y_pred_tts, mode='lines', name='Predicted Data'))
             fig.update_layout(title=f'Quadratic Regression Model - Train and Test Data', xaxis_title=self.colX, yaxis_title=self.colY)
             return fig
+        elif options.plot.backend == 'matplotlib':
+            import matplotlib.pyplot as plt
+            plt.scatter(self.X_train[self.colX], self.y_train[self.colY], color='blue', label='Train Data')
+            plt.scatter(self.X_test[self.colX], self.y_test[self.colY], color='red', label='Test Data')
+            plt.plot(self.X_test[self.colX], self.y_pred_tts, color='green', label='Predicted Data')
+            plt.title('Quadratic Regression Model - Train and Test Data')
+            plt.xlabel(self.colX)
+            plt.ylabel(self.colY)
+            plt.legend()
+            return plt
         else:
             raise NotImplementedError(f"Plotting backend {options.plot.backend} is not implemented yet.")
     
