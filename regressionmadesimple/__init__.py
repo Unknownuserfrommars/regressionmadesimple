@@ -1,23 +1,24 @@
-from .linear import Linear
-from .utils_preworks import Preworks, Logger
-from .options import options, save_options, load_options, reset_options
-from .wrapper import LinearRegressionModel
-from .quadratic import Quadratic
-from .cubic import Cubic
-from .curves import CustomCurve
+"""
+RegressionMadeSimple - A simple wrapper around scikit-learn for regression tasks.
 
-__version__ = "1.3.0"
+Version: 2.0.0
+Author: RegressionMadeSimple Team
+"""
 
+__version__ = "2.0.0"
+__author__ = "RegressionMadeSimple Team"
+
+# Import main API functions for easy access
+from .api.fit import fit
+from .models.linear import Linear
+from .models.quadratic import Quadratic
+from .models.cubic import Cubic
+
+# Clean public API surface
 __all__ = [
-    "Linear",
-    "Preworks",
-    "options",
-    "save_options",
-    "load_options",
-    "reset_options",
-    "LinearRegressionModel",
+    "fit",
+    "Linear", 
     "Quadratic",
     "Cubic",
-    "CustomCurve",
-    'Logger',
+    "__version__",
 ]
