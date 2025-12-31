@@ -1,15 +1,31 @@
-# RegressionMadeSimple
+# RegressionMadeSimple v3.0.0 🚀
 
-A simple and elegant wrapper around scikit-learn for regression tasks. Version 2.0.0 provides a clean, minimal API for common regression models with built-in data splitting capabilities.
+A minimalist machine learning toolkit that wraps `scikit-learn` for quick prototyping. Just `import regressionmadesimple as rms` and go!
 
-## Features
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- **Simple API**: One-liner function calls for quick regression fitting
-- **Clean Architecture**: Well-organized package structure with clear separation of concerns
-- **Sklearn Integration**: Built on top of scikit-learn for reliability and performance
-- **Multiple Models**: Support for Linear, Quadratic, and Cubic regression
-- **Data Splitting**: Built-in train-test split functionality with customizable ratios
-- **Utility Functions**: Built-in validation, I/O, and model management tools
+## What's New in v3.0.0 🎉
+
+RegressionMadeSimple v3.0.0 brings major improvements to make your regression workflow even simpler and more powerful:
+
+### 🏗️ Model Registry Pattern
+- **New API**: Access models via `rms.models.Linear`, `rms.models.Quadratic`, `rms.models.Cubic`
+- **Better Organization**: All models now live in a dedicated `models` submodule
+- **Type Safety**: Use class-based model specification for better IDE support
+
+### 🔧 Enhanced Base Class
+- **Common Functionality**: Eliminated code duplication across model classes
+- **Model Serialization**: Save and load trained models with `save_model()` and `load_model()`
+- **Additional Metrics**: New scoring methods including `r2_score()`, `mae()`, `rmse()`
+- **Shared Logic**: Unified train/test splitting and plotting functionality
+
+### 🔄 Backward Compatibility
+- **Legacy Support**: Old API still works (with deprecation warnings)
+- **Smooth Migration**: Gradual transition path to new API
+- **No Breaking Changes**: Existing code continues to work
+
+---
 
 ## Installation
 
@@ -17,305 +33,451 @@ A simple and elegant wrapper around scikit-learn for regression tasks. Version 2
 pip install regressionmadesimple
 ```
 
+Or install from source:
+
+```bash
+git clone https://github.com/Unknownuserfrommars/regressionmadesimple.git
+cd regressionmadesimple
+pip install -e .
+```
+
+---
+
 ## Quick Start
 
-### Function-Style API (One-liner)
+### Basic Usage (v3.0.0 API - Recommended)
 
 ```python
+import regressionmadesimple as rms
+import pandas as pd
+
+# Load your data
+data = pd.DataFrame({
+    'x': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'y': [2.1, 4.2, 6.1, 8.3, 10.2, 12.1, 14.3, 16.2, 18.1, 20.3]
+})
+
+# Fit a linear regression model (new API)
+model = rms.models.Linear(data, 'x', 'y')
+
+# Make predictions
+predictions = model.predict([[11], [12]])
+print(predictions)
+
+# Get model summary with metrics
+summary = model.summary()
+print(f"R² Score: {summary['r2_score']:.4f}")
+print(f"RMSE: {summary['rmse']:.4f}")
+print(f"MAE: {summary['mae']:.4f}")
+
+# Save the model
+model.save_model('my_linear_model.pkl')
+
+# Load it later
+loaded_model = rms.models.BaseModel.load_model('my_linear_model.pkl')
+```
+
+### Using the Wrapper (Both APIs Supported)
+
+```python
+# New v3.0.0 API (recommended)
+model = rms.LinearRegressionModel.fit(
+    data, 'x', 'y', 
+    model=rms.models.Quadratic,
+    testsize=0.2
+)
+
+# Legacy API (deprecated, shows warning)
+model = rms.LinearRegressionModel.fit(
+    data, 'x', 'y', 
+    model='quadratic',  # String-based (deprecated)
+    testsize=0.2
+)
+```
+
+---
+
+## Migration Guide: v2.x → v3.0.0
+
+### What Changed?
+
+1. **Model Access**: Models now accessible via `rms.models.*`
+2. **Enhanced Features**: New serialization and scoring methods
+3. **Deprecation Warnings**: String-based model specification shows warnings
+
+### Migration Examples
+
+#### Before (v2.x)
+```python
+import regressionmadesimple as rms
+
+# Direct instantiation
+model = rms.Linear(data, 'x', 'y')
+
+# Wrapper with string
+model = rms.LinearRegressionModel.fit(data, 'x', 'y', model='linear')
+```
+
+#### After (v3.0.0 - Recommended)
+```python
+import regressionmadesimple as rms
+
+# Direct instantiation (still works!)
+model = rms.Linear(data, 'x', 'y')  # Backward compatible
+
+# Or use new model registry (recommended)
+model = rms.models.Linear(data, 'x', 'y')
+
+# Wrapper with class
+model = rms.LinearRegressionModel.fit(data, 'x', 'y', model=rms.models.Linear)
+```
+
+### Migration Checklist
+
+- [ ] Update imports to use `rms.models.*` for new projects
+- [ ] Replace string-based model specification with class-based
+- [ ] Take advantage of new features: `save_model()`, `r2_score()`, `mae()`, `rmse()`
+- [ ] Test existing code (it should still work with deprecation warnings)
+- [ ] Plan migration before v4.0.0 (when legacy API will be removed)
+
+---
+
+## Features
+
+### Available Models
+
+| Model | Class | Description |
+|-------|-------|-------------|
+| **Linear** | `rms.models.Linear` | Simple linear regression (y = mx + b) |
+| **Quadratic** | `rms.models.Quadratic` | Polynomial regression (degree=2) |
+| **Cubic** | `rms.models.Cubic` | Polynomial regression (degree=3) |
+| **Custom Curve** | `rms.models.CustomCurve` | Custom basis functions (experimental) |
+
+### Core Functionality
+
+#### 1. Model Training
+```python
+# Automatic train/test split (default)
+model = rms.models.Linear(data, 'x', 'y', testsize=0.2, randomstate=42)
+
+# Use entire dataset (no split)
+model = rms.models.Linear(data, 'x', 'y', train_test_split=False)
+
+# Provide pre-split data
+model = rms.models.Linear(
+    data, 'x', 'y',
+    train_test_split=False,
+    X_train=X_train, y_train=y_train,
+    X_test=X_test, y_test=y_test
+)
+```
+
+#### 2. Predictions
+```python
+# Single prediction
+result = model.predict([[5.5]])
+
+# Multiple predictions
+results = model.predict([[5.5], [6.0], [6.5]])
+```
+
+#### 3. Model Evaluation (New in v3.0.0!)
+```python
+# Get comprehensive summary
+summary = model.summary()
+print(summary)
+# Output: {
+#   'model': 'Linear Regression',
+#   'mse': 0.0234,
+#   'rmse': 0.1530,
+#   'mae': 0.1234,
+#   'r2_score': 0.9876,
+#   'coef': [[2.0123]],
+#   'intercept': [0.0987]
+# }
+
+# Individual metrics
+print(f"R² Score: {model.r2_score()}")
+print(f"Mean Absolute Error: {model.mae()}")
+print(f"Root Mean Squared Error: {model.rmse()}")
+print(f"Mean Squared Error: {model.mse()}")
+```
+
+#### 4. Model Serialization (New in v3.0.0!)
+```python
+# Save trained model
+model.save_model('models/my_regression_model.pkl')
+
+# Load model later
+from regressionmadesimple.models import BaseModel
+loaded_model = BaseModel.load_model('models/my_regression_model.pkl')
+
+# Use loaded model
+predictions = loaded_model.predict(new_data)
+```
+
+#### 5. Visualization
+```python
+# Plot training/test data with predictions
+fig = model.plot_y_train()
+fig.show()  # For Plotly backend
+
+# Plot predictions on new data
+fig = model.plot_predict(X_new, y_new)
+fig.show()
+```
+
+### Configuration Options
+
+```python
+import regressionmadesimple as rms
+
+# View current options
+print(rms.options)
+
+# Change plotting backend
+rms.options.plot.backend = 'matplotlib'  # or 'plotly' (default)
+
+# Change training defaults
+rms.options.training.test_size = 0.25
+rms.options.training.random_state = 42
+
+# Save custom options
+rms.save_options('my_config.json')
+
+# Load options later
+rms.load_options('my_config.json')
+
+# Reset to defaults
+rms.reset_options()
+```
+
+---
+
+## Advanced Examples
+
+### Example 1: Quadratic Regression with Custom Split
+
+```python
+import regressionmadesimple as rms
+import pandas as pd
 import numpy as np
-from regressionmadesimple import fit
 
-# Generate sample data
-X = np.random.randn(100, 2)
-y = 2 * X[:, 0] + 3 * X[:, 1] + np.random.randn(100) * 0.1
+# Generate sample data with quadratic relationship
+x = np.linspace(0, 10, 100)
+y = 2*x**2 - 3*x + 5 + np.random.normal(0, 5, 100)
+data = pd.DataFrame({'x': x, 'y': y})
 
-# Fit a model without data splitting
-model, results = fit(X, y, model="Linear")
-print(f"R² Score: {results['r2_score']:.3f}")
+# Fit quadratic model
+model = rms.models.Quadratic(data, 'x', 'y', testsize=0.3, randomstate=123)
 
-# Fit a model with 80-20 train-test split
-model, results = fit(X, y, model="Linear", split_ratio=[8, 2])
-print(f"Train R²: {results['train_r2_score']:.3f}")
-print(f"Test R²: {results['test_r2_score']:.3f}")
+# Evaluate
+summary = model.summary()
+print(f"Model: {summary['model']}")
+print(f"R² Score: {summary['r2_score']:.4f}")
+print(f"RMSE: {summary['rmse']:.4f}")
 
-# Access test data from the model
-print(f"Test data shape: {model.X_test.shape}")
-print(f"Training data shape: {model.X_train.shape}")
+# Visualize
+fig = model.plot_y_train()
+fig.show()
 
-# Try different models with splitting
-quad_model, quad_results = fit(X, y, model="Quadratic", split_ratio=[7, 3])
-cubic_model, cubic_results = fit(X, y, model="Cubic", split_ratio=[8, 2], random_state=42)
+# Save for later use
+model.save_model('quadratic_model.pkl')
 ```
 
-### Class-Style API
+### Example 2: Custom Curve Fitting (Experimental)
 
 ```python
-from regressionmadesimple import Linear, Quadratic, Cubic
+import regressionmadesimple as rms
+import pandas as pd
+import numpy as np
 
-# Linear regression without splitting
-linear = Linear()
-linear.fit(X, y)
-predictions = linear.predict(X)
-score = linear.score(X, y)
+# Generate data with sinusoidal pattern
+x = np.linspace(0, 2*np.pi, 100)
+y = 3*np.sin(x) + 2*np.cos(x) + np.random.normal(0, 0.5, 100)
+data = pd.DataFrame({'x': x, 'y': y})
 
-# Linear regression with automatic data splitting
-linear_split = Linear(split_ratio=[8, 2], random_state=42)
-linear_split.fit(X, y)
+# Fit custom curve with trigonometric basis functions
+model = rms.models.CustomCurve(
+    data, 'x', 'y',
+    basis_funcs=['x', 'sin(x)', 'cos(x)', 'x^2']
+)
 
-# Access training and test scores
-print(f"Train R²: {linear_split.get_train_score():.3f}")
-print(f"Test R²: {linear_split.get_test_score():.3f}")
+# Evaluate
+print(f"Basis Functions: {model.basis_funcs}")
+print(f"R² Score: {model.r2_score():.4f}")
 
-# Access split data
-print(f"Training samples: {len(linear_split.y_train)}")
-print(f"Test samples: {len(linear_split.y_test)}")
-
-# Quadratic regression with splitting
-quadratic = Quadratic(split_ratio=[7, 3], random_state=123)
-quadratic.fit(X, y)
-print(quadratic.get_params())
-
-# Cubic regression with splitting
-cubic = Cubic(split_ratio=[9, 1])
-cubic.fit(X, y)
-feature_names = cubic.get_feature_names(['x1', 'x2'])
+# Make predictions
+x_new = np.linspace(0, 2*np.pi, 50)
+predictions = model.predict(x_new.reshape(-1, 1))
 ```
 
-## Data Splitting Feature
-
-The `split_ratio` parameter allows you to automatically split your data into training and testing sets:
+### Example 3: Comparing Multiple Models
 
 ```python
-# Different ways to specify split ratios
-split_ratio = [8, 2]    # 80% train, 20% test
-split_ratio = [7, 3]    # 70% train, 30% test
-split_ratio = [0.8, 0.2]  # Same as [8, 2] but with decimals
+import regressionmadesimple as rms
+import pandas as pd
 
-# Using with function API
-model, results = fit(X, y, model="Linear", split_ratio=[8, 2], random_state=42)
+# Load data
+data = pd.read_csv('your_data.csv')
 
-# Results include both train and test metrics
-print(f"Training R²: {results['train_r2_score']:.3f}")
-print(f"Test R²: {results['test_r2_score']:.3f}")
-print(f"Training samples: {results['n_samples_train']}")
-print(f"Test samples: {results['n_samples_test']}")
+# Try different models
+models = {
+    'Linear': rms.models.Linear(data, 'x', 'y'),
+    'Quadratic': rms.models.Quadratic(data, 'x', 'y'),
+    'Cubic': rms.models.Cubic(data, 'x', 'y'),
+}
 
-# Using with class API
-model = Linear(split_ratio=[8, 2], random_state=42)
-model.fit(X, y)
+# Compare performance
+print("Model Comparison:")
+print("-" * 60)
+for name, model in models.items():
+    summary = model.summary()
+    print(f"{name:12} | R²: {summary['r2_score']:.4f} | "
+          f"RMSE: {summary['rmse']:.4f} | MAE: {summary['mae']:.4f}")
 
-# Access split data directly
-X_train = model.X_train
-y_train = model.y_train
-X_test = model.X_test
-y_test = model.y_test
+# Save the best model
+best_model = models['Quadratic']  # Based on your analysis
+best_model.save_model('best_model.pkl')
 ```
 
-## Package Structure
-
-```
-regressionmadesimple/
-├── __init__.py                 # Clean, minimal public surface
-├── api/                        # One-liner, function-style API
-│   ├── __init__.py
-│   └── fit.py                  # fit(X, y, model="Linear", split_ratio=[8,2])
-├── models/                     # Simple wrappers around sklearn
-│   ├── __init__.py
-│   ├── linear.py               # Linear regression with splitting
-│   ├── quadratic.py            # Quadratic regression with splitting
-│   └── cubic.py                # Cubic regression with splitting
-└── utils/                      # Utility functions
-    ├── __init__.py
-    ├── validation.py           # Input validation and data splitting
-    └── io.py                   # Model I/O operations
-```
+---
 
 ## API Reference
 
-### Function API
-
-#### `fit(X, y, model="Linear", split_ratio=None, random_state=None, **kwargs)`
-
-Fit a regression model with a simple one-liner API.
-
-**Parameters:**
-- `X`: Training features (array-like)
-- `y`: Training targets (array-like)  
-- `model`: Model type ("Linear", "Quadratic", "Cubic")
-- `split_ratio`: Split ratio as [train_ratio, test_ratio], e.g., [8, 2]
-- `random_state`: Random state for reproducible splits
-- `**kwargs`: Additional model parameters
-
-**Returns:**
-- `fitted_model`: The fitted model instance with test data as attributes if split_ratio provided
-- `results`: Dictionary with fit results and metrics
-
 ### Model Classes
 
-#### `Linear(fit_intercept=True, normalize=False, split_ratio=None, random_state=None)`
+#### `rms.models.Linear`
+Linear regression model (y = mx + b)
 
-Simple wrapper around scikit-learn's LinearRegression with data splitting.
+**Methods:**
+- `__init__(dataset, colX, colY, **kwargs)` - Initialize and fit model
+- `predict(X_new)` - Make predictions
+- `summary()` - Get model summary with metrics
+- `save_model(filepath)` - Save model to disk
+- `plot_y_train()` - Plot training/test data
+- `plot_predict(X_new, y_new)` - Plot predictions
+- `r2_score()` - Calculate R² score
+- `mae()` - Calculate Mean Absolute Error
+- `rmse()` - Calculate Root Mean Squared Error
+- `mse()` - Get Mean Squared Error
 
-#### `Quadratic(fit_intercept=True, include_bias=True, split_ratio=None, random_state=None)`
+#### `rms.models.Quadratic`
+Quadratic regression model (polynomial degree=2)
 
-Quadratic (polynomial degree 2) regression using PolynomialFeatures with data splitting.
+Same methods as Linear.
 
-#### `Cubic(fit_intercept=True, include_bias=True, split_ratio=None, random_state=None)`
+#### `rms.models.Cubic`
+Cubic regression model (polynomial degree=3)
 
-Cubic (polynomial degree 3) regression using PolynomialFeatures with data splitting.
+Same methods as Linear.
 
-**Common Methods:**
-- `fit(X, y)`: Fit the model (automatically splits data if split_ratio provided)
-- `predict(X)`: Make predictions
-- `score(X, y)`: Calculate R² score
-- `get_train_score()`: Get R² score on training data
-- `get_test_score()`: Get R² score on test data (if available)
-- `get_params()`: Get model parameters including split information
+#### `rms.models.CustomCurve`
+Custom curve fitting with user-defined basis functions
+Still testing! Some features may not be working!
 
-**Data Attributes (when split_ratio is used):**
-- `X_train`: Training features
-- `y_train`: Training targets
-- `X_test`: Test features
-- `y_test`: Test targets
+**Additional Parameters:**
+- `basis_funcs` - List of basis functions: `["x", "x^2", "x^3", "cos(x)", "sin(x)", "log(x)", "exp(x)", "sqrt(x)"]`
 
-### Utility Functions
+### Wrapper Class
 
-#### Validation and Data Splitting
-- `validate_input(X, y)`: Validate and convert input data
-- `validate_split_ratio(split_ratio)`: Validate and normalize split ratio
-- `split_data(X, y, split_ratio, random_state=None)`: Split data into train/test sets
-- `validate_model_params(**params)`: Validate model parameters
+#### `rms.LinearRegressionModel`
 
-#### I/O Operations
-- `save_model(model, filepath)`: Save fitted model to disk
-- `load_model(filepath)`: Load model from disk
-- `export_results(results, filepath, format='json')`: Export results
-- `load_data(filepath, **kwargs)`: Load data from various formats
-- `save_predictions(predictions, filepath, X=None, feature_names=None)`: Save predictions
+**Methods:**
+- `fit(dataset, colX, colY, model, **kwargs)` - Fit a regression model
+  - `model` can be a class (e.g., `rms.models.Linear`) or string (deprecated)
 
-## Examples
+---
 
-### Basic Usage with Data Splitting
+## Configuration
 
-```python
-import numpy as np
-from regressionmadesimple import fit, Linear
-
-# Generate synthetic data
-np.random.seed(42)
-X = np.random.randn(100, 3)
-y = 2*X[:, 0] + 3*X[:, 1] - X[:, 2] + np.random.randn(100)*0.1
-
-# Method 1: Function API with splitting
-model, results = fit(X, y, model="Linear", split_ratio=[8, 2], random_state=42)
-print(f"Train R²: {results['train_r2_score']:.3f}")
-print(f"Test R²: {results['test_r2_score']:.3f}")
-print(f"Split ratio: {results['split_ratio']}")
-
-# Method 2: Class API with splitting
-linear = Linear(split_ratio=[8, 2], random_state=42)
-linear.fit(X, y)
-print(f"Model: {linear}")
-print(f"Train score: {linear.get_train_score():.3f}")
-print(f"Test score: {linear.get_test_score():.3f}")
-```
-
-### Model Comparison with Splitting
+### Options Object
 
 ```python
-from regressionmadesimple import fit
-
-models = ["Linear", "Quadratic", "Cubic"]
-results = {}
-
-for model_type in models:
-    model, result = fit(X, y, model=model_type, split_ratio=[8, 2], random_state=42)
-    results[model_type] = {
-        'train_r2': result['train_r2_score'],
-        'test_r2': result['test_r2_score']
-    }
-    print(f"{model_type}:")
-    print(f"  Train R² = {result['train_r2_score']:.3f}")
-    print(f"  Test R²  = {result['test_r2_score']:.3f}")
-
-# Find best model based on test performance
-best_model = max(results, key=lambda x: results[x]['test_r2'])
-print(f"Best model (test R²): {best_model}")
+rms.options.plot.backend          # 'plotly' or 'matplotlib'
+rms.options.training.test_size    # Default: 0.15
+rms.options.training.random_state # Default: 1
+rms.options.linear.auto_split     # Default: True
+rms.options.quadratic.auto_split  # Default: True
 ```
 
-### Working with Split Data
+### Functions
 
-```python
-from regressionmadesimple import Quadratic
+- `rms.save_options(filepath)` - Save current options to JSON
+- `rms.load_options(filepath)` - Load options from JSON
+- `rms.reset_options()` - Reset to default options
 
-# Create model with data splitting
-model = Quadratic(split_ratio=[7, 3], random_state=123)
-model.fit(X, y)
+---
 
-# Access split data
-print(f"Original data shape: {X.shape}")
-print(f"Training data shape: {model.X_train.shape}")
-print(f"Test data shape: {model.X_test.shape}")
+## Roadmap
 
-# Make predictions on both sets
-train_predictions = model.predict(model.X_train)
-test_predictions = model.predict(model.X_test)
+### Planned for v3.x
+- [ ] Additional models
+- [ ] KNN regression support
+- [ ] Cross-validation utilities
+- [ ] Hyperparameter tuning helpers
+- [ ] More visualization options
+- [ ] Support for the creation of a validation dataset (apart from training & testing dataset)
 
-# Calculate custom metrics
-from sklearn.metrics import mean_squared_error
-train_mse = mean_squared_error(model.y_train, train_predictions)
-test_mse = mean_squared_error(model.y_test, test_predictions)
+### Future (v4.0.0 and later)
+- [ ] Remove deprecated string-based API
+- [ ] Classification models
+- [ ] Pipeline support
+- [ ] Feature engineering utilities
 
-print(f"Train MSE: {train_mse:.3f}")
-print(f"Test MSE: {test_mse:.3f}")
-```
-
-### Save and Load Models with Split Data
-
-```python
-from regressionmadesimple import Linear
-from regressionmadesimple.utils import save_model, load_model
-
-# Fit and save model with split data
-model = Linear(split_ratio=[8, 2], random_state=42)
-model.fit(X, y)
-save_model(model, "my_split_model.pkl")
-
-# Load and verify split data is preserved
-loaded_model = load_model("my_split_model.pkl")
-print(f"Split ratio preserved: {loaded_model.split_ratio}")
-print(f"Test data available: {loaded_model.X_test is not None}")
-print(f"Test score: {loaded_model.get_test_score():.3f}")
-```
-
-## Requirements
-
-- Python >= 3.7
-- numpy >= 1.19.0
-- scikit-learn >= 1.0.0
-- pandas >= 1.3.0
-
-## License
-
-MIT License
+---
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Repository
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-GitHub: https://github.com/Unknownuserfrommars/regressionmadesimple
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+- Built on top of [scikit-learn](https://scikit-learn.org/)
+- Visualization powered by [Plotly](https://plotly.com/) and [Matplotlib](https://matplotlib.org/) (Matplotlib support will be added in future versions!)
+- Data handling with [pandas](https://pandas.pydata.org/) and [NumPy](https://numpy.org/)
+
+---
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/Unknownuserfrommars/regressionmadesimple/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Unknownuserfrommars/regressionmadesimple/discussions)
+
+---
 
 ## Changelog
 
-### Version 2.0.0
-- Initial release of RegressionMadeSimple v2
-- Clean, minimal API design
-- Support for Linear, Quadratic, and Cubic regression
-- **NEW**: Built-in data splitting with `split_ratio` parameter
-- **NEW**: Automatic train-test split functionality
-- **NEW**: Easy access to split data via model attributes
-- Comprehensive utility functions
-- Full scikit-learn integration
-- Updated repository URL
+### v3.0.0 (2025-01-01)
+- ✨ **New**: Model registry pattern (`rms.models.*`)
+- ✨ **New**: Enhanced BaseModel with common functionality
+- ✨ **New**: Model serialization (`save_model()`, `load_model()`)
+- ✨ **New**: Additional scoring metrics (`r2_score()`, `mae()`, `rmse()`)
+- 🔧 **Improved**: Refactored codebase to eliminate duplication
+- 🔧 **Improved**: Better type hints throughout
+- ⚠️ **Deprecated**: String-based model specification (still works with warnings)
+- 📚 **Docs**: Comprehensive README with migration guide
+
+### v2.0.0 (Previous Release)
+- Initial public release
+- Linear, Quadratic, Cubic regression models
+- Basic plotting and evaluation
+- Options configuration system
+
+---
+
+Made with ❤️ by [Unknownuserfrommars](https://github.com/Unknownuserfrommars)

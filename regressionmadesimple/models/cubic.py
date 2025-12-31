@@ -1,227 +1,199 @@
 """
-Cubic regression model wrapper.
+Cubic Regression Model - Refactored for v3.0.0
+Uses enhanced BaseModel and PolynomialFeatures
 """
 
+from typing import Union, Optional
+import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import r2_score
-from typing import Union, Optional, List
-from ..utils.validation import validate_input, split_data
+import plotly.graph_objects as go
+
+from .base import BaseModel
+from ..options import options
 
 
-class Cubic:
+class Cubic(BaseModel):
     """
-    Simple wrapper for cubic (polynomial degree 3) regression.
-    
-    Uses scikit-learn's PolynomialFeatures with LinearRegression
-    to create cubic models.
-    
-    Parameters
-    ----------
-    fit_intercept : bool, default=True
-        Whether to calculate the intercept for this model
-    include_bias : bool, default=True
-        Whether to include bias column in polynomial features
-    split_ratio : list of int or float, optional
-        Split ratio as [train_ratio, test_ratio], e.g., [8, 2] means 80% train, 20% test.
-        If provided, data will be automatically split during fit().
-    random_state : int, optional
-        Random state for reproducible data splits
-    
-    Attributes
-    ----------
-    model : sklearn.pipeline.Pipeline
-        Pipeline containing PolynomialFeatures and LinearRegression
-    is_fitted : bool
-        Whether the model has been fitted
-    X_train : np.ndarray, optional
-        Training features (available if split_ratio was used)
-    y_train : np.ndarray, optional
-        Training targets (available if split_ratio was used)
-    X_test : np.ndarray, optional
-        Testing features (available if split_ratio was used)
-    y_test : np.ndarray, optional
-        Testing targets (available if split_ratio was used)
+    Cubic (Polynomial degree=3) Regression model.
+    Inherits common methods from BaseModel.
     """
     
     def __init__(
-        self, 
-        fit_intercept: bool = True, 
-        include_bias: bool = True,
-        split_ratio: Optional[List[Union[int, float]]] = None,
-        random_state: Optional[int] = None
+        self,
+        dataset: pd.DataFrame,
+        colX: str,
+        colY: str,
+        testsize: Optional[float] = None,
+        randomstate: Optional[int] = None,
+        train_test_split: Optional[bool] = None,
+        X_train: Optional[pd.DataFrame] = None,
+        y_train: Optional[pd.DataFrame] = None,
+        X_test: Optional[pd.DataFrame] = None,
+        y_test: Optional[pd.DataFrame] = None
     ):
-        self.fit_intercept = fit_intercept
-        self.include_bias = include_bias
-        self.split_ratio = split_ratio
-        self.random_state = random_state
+        """
+        Initialize Cubic Regression model.
         
-        # Create pipeline with polynomial features (degree=3) and linear regression
-        self.model = Pipeline([
-            ('poly', PolynomialFeatures(degree=3, include_bias=include_bias)),
-            ('linear', LinearRegression(fit_intercept=fit_intercept))
-        ])
-        self.is_fitted = False
+        Args:
+            dataset: The dataset to input, supports pandas DataFrame
+            colX: the X column (input)
+            colY: the y column (output)
+            testsize: The size of the train_test_split, default from options or 0.15
+            randomstate: The random state of train_test_split, default from options or 1
+            train_test_split: Whether to split the dataset. Defaults to True
+            X_train, y_train, X_test, y_test: Pre-split data (optional)
+        """
+        # Use options if parameters not provided
+        testsize = testsize if testsize is not None else options.training.test_size
+        randomstate = randomstate if randomstate is not None else options.training.random_state
+        train_test_split = train_test_split if train_test_split is not None else options.quadratic.auto_split
         
-        # Test data attributes (will be set if split_ratio is used)
-        self.X_train = None
-        self.y_train = None
-        self.X_test = None
-        self.y_test = None
+        # Initialize base class
+        super().__init__(
+            dataset=dataset,
+            colX=colX,
+            colY=colY,
+            testsize=testsize,
+            randomstate=randomstate,
+            train_test_split=train_test_split,
+            X_train=X_train,
+            y_train=y_train,
+            X_test=X_test,
+            y_test=y_test
+        )
+        
+        # Polynomial feature transformer
+        self.poly_features = PolynomialFeatures(degree=3)
+        
+        # Fit the model
+        self.fit()
     
-    def fit(self, X: Union[np.ndarray, list], y: Union[np.ndarray, list]) -> 'Cubic':
+    def fit(self):
         """
         Fit the cubic regression model.
-        
-        Parameters
-        ----------
-        X : array-like, shape (n_samples, n_features)
-            Training data features
-        y : array-like, shape (n_samples,)
-            Training data targets
-            
-        Returns
-        -------
-        self : Cubic
-            Returns self for method chaining
         """
-        X, y = validate_input(X, y)
+        # Transform features
+        X_poly_train = self.poly_features.fit_transform(self.X_train)
         
-        # Handle data splitting if split_ratio is provided
-        if self.split_ratio is not None:
-            X_train, X_test, y_train, y_test = split_data(
-                X, y, self.split_ratio, self.random_state
+        # Fit model
+        self.model = LinearRegression()
+        self.model.fit(X_poly_train, self.y_train)
+        
+        # Compute metrics if test data is available
+        self._compute_metrics()
+    
+    def predict(self, X_new: Union[np.ndarray, pd.DataFrame]) -> np.ndarray:
+        """
+        Make predictions on new data.
+        
+        Args:
+            X_new: New input data
+            
+        Returns:
+            Predictions as numpy array
+        """
+        X_poly_new = self.poly_features.transform(X_new)
+        return self.model.predict(X_poly_new)
+    
+    def plot_y_train(self):
+        """
+        Plot training/test data and predictions.
+        
+        Returns:
+            Plotly or Matplotlib figure object
+        """
+        if not hasattr(self, 'y_pred_tts') or self.y_pred_tts is None:
+            raise Exception('Please set the `train_test_split` parameter to True in the constructor to use this function.')
+        
+        if options.plot.backend == 'plotly':
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=self.X_train[self.colX].values.flatten(),
+                y=self.y_train[self.colY].values.flatten(),
+                mode='markers',
+                name='Train Data'
+            ))
+            fig.add_trace(go.Scatter(
+                x=self.X_test[self.colX].values.flatten(),
+                y=self.y_test[self.colY].values.flatten(),
+                mode='markers',
+                name='Test Data'
+            ))
+            fig.add_trace(go.Scatter(
+                x=self.X_test[self.colX].values.flatten(),
+                y=self.y_pred_tts.flatten(),
+                mode='lines',
+                name='Predicted Data'
+            ))
+            fig.update_layout(
+                title='Cubic Regression Model - Train and Test Data',
+                xaxis_title=self.colX,
+                yaxis_title=self.colY
             )
-            # Store all data as attributes
-            self.X_train = X_train
-            self.y_train = y_train
-            self.X_test = X_test
-            self.y_test = y_test
+            return fig
+        elif options.plot.backend == 'matplotlib':
+            import matplotlib.pyplot as plt
+            fig, ax = plt.subplots()
+            ax.scatter(self.X_train[self.colX], self.y_train[self.colY], color='blue', label='Train Data')
+            ax.scatter(self.X_test[self.colX], self.y_test[self.colY], color='red', label='Test Data')
+            ax.plot(self.X_test[self.colX], self.y_pred_tts, color='green', label='Predicted Data')
+            ax.set_title('Cubic Regression Model - Train and Test Data')
+            ax.set_xlabel(self.colX)
+            ax.set_ylabel(self.colY)
+            ax.legend()
+            return fig
         else:
-            X_train, y_train = X, y
-            self.X_train = X_train
-            self.y_train = y_train
-        
-        self.model.fit(X_train, y_train)
-        self.is_fitted = True
-        return self
+            raise NotImplementedError(f"Plotting backend {options.plot.backend} is not implemented yet.")
     
-    def predict(self, X: Union[np.ndarray, list]) -> np.ndarray:
+    def plot_predict(self, X_new: Union[np.ndarray, pd.DataFrame], 
+                     y_new: Union[np.ndarray, pd.DataFrame]):
         """
-        Make predictions using the fitted model.
+        Plot predictions on new data.
         
-        Parameters
-        ----------
-        X : array-like, shape (n_samples, n_features)
-            Input features for prediction
+        Args:
+            X_new: New input data
+            y_new: Actual output for new data
             
-        Returns
-        -------
-        predictions : np.ndarray, shape (n_samples,)
-            Predicted values
+        Returns:
+            Plotly figure object
         """
-        if not self.is_fitted:
-            raise ValueError("Model must be fitted before making predictions")
-        
-        X = np.asarray(X)
-        return self.model.predict(X)
+        if options.plot.backend == 'plotly':
+            predictions = self.predict(X_new)
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=X_new[self.colX] if isinstance(X_new, pd.DataFrame) else X_new.flatten(),
+                y=y_new[self.colY] if isinstance(y_new, pd.DataFrame) else y_new.flatten(),
+                mode='markers',
+                name='New Data'
+            ))
+            fig.add_trace(go.Scatter(
+                x=X_new[self.colX] if isinstance(X_new, pd.DataFrame) else X_new.flatten(),
+                y=predictions.flatten(),
+                mode='lines',
+                name='Prediction'
+            ))
+            fig.update_layout(
+                title='Cubic Regression Model - New Data Prediction',
+                xaxis_title=self.colX,
+                yaxis_title=self.colY
+            )
+            return fig
+        else:
+            raise NotImplementedError(f"Plotting backend {options.plot.backend} is not implemented yet.")
     
-    def score(self, X: Union[np.ndarray, list], y: Union[np.ndarray, list]) -> float:
+    def summary(self):
         """
-        Calculate R² score for the model.
+        Get model summary including coefficients and metrics.
         
-        Parameters
-        ----------
-        X : array-like, shape (n_samples, n_features)
-            Test features
-        y : array-like, shape (n_samples,)
-            True target values
-            
-        Returns
-        -------
-        score : float
-            R² score
+        Returns:
+            Dictionary with model information
         """
-        predictions = self.predict(X)
-        return r2_score(y, predictions)
-    
-    def get_test_score(self) -> Optional[float]:
-        """
-        Get R² score on test data (if available).
-        
-        Returns
-        -------
-        test_score : float or None
-            R² score on test data, or None if no test data available
-        """
-        if self.X_test is not None and self.y_test is not None:
-            return self.score(self.X_test, self.y_test)
-        return None
-    
-    def get_train_score(self) -> Optional[float]:
-        """
-        Get R² score on training data.
-        
-        Returns
-        -------
-        train_score : float or None
-            R² score on training data, or None if not fitted
-        """
-        if self.X_train is not None and self.y_train is not None:
-            return self.score(self.X_train, self.y_train)
-        return None
-    
-    def get_params(self) -> dict:
-        """Get model parameters."""
-        params = {
-            "fit_intercept": self.fit_intercept,
-            "include_bias": self.include_bias,
-            "degree": 3,
-            "split_ratio": self.split_ratio,
-            "random_state": self.random_state
-        }
-        
-        if self.is_fitted:
-            linear_model = self.model.named_steps['linear']
-            params.update({
-                "coefficients": linear_model.coef_,
-                "intercept": linear_model.intercept_,
-                "n_polynomial_features": len(linear_model.coef_)
-            })
-            
-            if self.split_ratio is not None:
-                params.update({
-                    "n_samples_train": len(self.y_train) if self.y_train is not None else None,
-                    "n_samples_test": len(self.y_test) if self.y_test is not None else None,
-                    "train_r2_score": self.get_train_score(),
-                    "test_r2_score": self.get_test_score()
-                })
-        
-        return params
-    
-    def get_feature_names(self, input_features: list = None) -> list:
-        """
-        Get names of polynomial features.
-        
-        Parameters
-        ----------
-        input_features : list, optional
-            Names of input features
-            
-        Returns
-        -------
-        feature_names : list
-            Names of polynomial features
-        """
-        if not self.is_fitted:
-            raise ValueError("Model must be fitted to get feature names")
-        
-        poly_transformer = self.model.named_steps['poly']
-        return poly_transformer.get_feature_names_out(input_features)
-    
-    def __repr__(self) -> str:
-        status = "fitted" if self.is_fitted else "not fitted"
-        split_info = f", split_ratio={self.split_ratio}" if self.split_ratio else ""
-        return f"Cubic(fit_intercept={self.fit_intercept}, include_bias={self.include_bias}{split_info}) - {status}"
+        base_summary = super().summary()
+        base_summary.update({
+            'model': 'Cubic Regression',
+            'coefficients': self.model.coef_.tolist(),
+            'intercept': self.model.intercept_.tolist(),
+        })
+        return base_summary
