@@ -4,6 +4,7 @@ A minimalist machine learning toolkit that wraps `scikit-learn` for quick protot
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/regressionmadesimple?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=GREEN&left_text=Total+Downloads)](https://pepy.tech/projects/regressionmadesimple)
 
 ## What's New in v3.0.0 🎉
 
@@ -479,5 +480,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Options configuration system
 
 ---
+
 
 Made with ❤️ by [Unknownuserfrommars](https://github.com/Unknownuserfrommars)
