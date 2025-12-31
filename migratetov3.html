@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migration Guide to v3.0.0 - RegressionMadeSimple</title>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --fg: #333;
+      --heading: #222;
+      --link: #0366d6;
+      --card: #fff;
+      --border: #ddd;
+      --code-bg: #f6f8fa;
+      --warning-bg: #fff3cd;
+      --warning-border: #ffc107;
+      --success-bg: #d4edda;
+      --success-border: #28a745;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --fg: #e0e0e0;
+      --heading: #f1f1f1;
+      --link: #58a6ff;
+      --card: #1e1e1e;
+      --border: #333;
+      --code-bg: #2d2d2d;
+      --warning-bg: #3d3520;
+      --warning-border: #ffc107;
+      --success-bg: #1e3a2e;
+      --success-border: #28a745;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+      color: var(--fg);
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
+    }
+
+    nav {
+      background: var(--card);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      border-radius: 6px;
+    }
+
+    .nav-links a {
+      margin-right: 1rem;
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .toggle {
+      cursor: pointer;
+      background: none;
+      border: 1px solid var(--fg);
+      border-radius: 6px;
+      padding: 0.25rem 0.75rem;
+      color: var(--fg);
+      font-size: 0.9rem;
+    }
+
+    h1, h2, h3 {
+      color: var(--heading);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      border: 1px solid var(--border);
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .callout {
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      border-left: 4px solid;
+    }
+
+    .callout-warning {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+    }
+
+    .callout-success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+    }
+
+    .callout-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .comparison-item {
+      background: var(--card);
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .comparison-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--heading);
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .badge-new {
+      background: #28a745;
+      color: white;
+    }
+
+    .badge-deprecated {
+      background: #ffc107;
+      color: #333;
+    }
+
+    @media (max-width: 768px) {
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+      
+      body {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-links">
+      <a href="index.html">🏠 Main</a>
+      <a href="changelog.html">📝 Changelog</a>
+      <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">📦 GitHub</a>
+    </div>
+    <button class="toggle" onclick="toggleDarkMode()">🌙 Dark</button>
+  </nav>
+
+  <h1>🚀 Migration Guide to v3.0.0</h1>
+  <p style="font-size: 1.1rem; color: var(--fg);">
+    Welcome to RegressionMadeSimple v3.0.0! This guide will help you upgrade from v2.x to take advantage of the new features and improvements.
+  </p>
+
+  <div class="callout callout-success">
+    <div class="callout-title">✅ Good News: Backward Compatible!</div>
+    Your existing v2.x code will continue to work in v3.0.0, but you'll see deprecation warnings for outdated patterns. 
+    We recommend migrating to the new API to future-proof your code before v4.0.0.
+  </div>
+
+  <h2>📋 What's New in v3.0.0</h2>
+
+  <h3>1. Model Registry Pattern <span class="badge badge-new">NEW</span></h3>
+  <p>Models are now accessible through a dedicated <code>models</code> module:</p>
+  <ul>
+    <li><code>rms.models.Linear</code> - Linear regression</li>
+    <li><code>rms.models.Quadratic</code> - Quadratic regression</li>
+    <li><code>rms.models.Cubic</code> - Cubic regression</li>
+    <li><code>rms.models.CustomCurve</code> - Custom curve fitting</li>
+  </ul>
+
+  <h3>2. Enhanced Base Class <span class="badge badge-new">NEW</span></h3>
+  <p>All models now inherit from an enhanced <code>BaseModel</code> that provides:</p>
+  <ul>
+    <li><b>Model Serialization</b>: <code>save_model()</code> and <code>load_model()</code> methods</li>
+    <li><b>Additional Metrics</b>: <code>r2_score()</code>, <code>mae()</code>, <code>rmse()</code></li>
+    <li><b>Shared Functionality</b>: Common train/test split logic and plotting</li>
+    <li><b>Type Hints</b>: Better IDE support and code clarity</li>
+  </ul>
+
+  <h3>3. Class-Based Model Specification <span class="badge badge-new">RECOMMENDED</span></h3>
+  <p>The new recommended way to specify models uses class references instead of strings.</p>
+
+  <h2>🔄 Migration Steps</h2>
+
+  <h3>Step 1: Update Model Instantiation</h3>
+
+  <div class="comparison">
+    <div class="comparison-item">
+      <div class="comparison-title">❌ Old Way (v2.x) <span class="badge badge-deprecated">DEPRECATED</span></div>
+      <pre><code>import regressionmadesimple as rms
+
+# Direct instantiation
+model = rms.Linear(data, 'x', 'y')
+
+# Using wrapper with string
+model = rms.LinearRegressionModel.fit(
+    data, 'x', 'y', 
+    model='linear'
+)</code></pre>
+    </div>
+
+    <div class="comparison-item">
+      <div class="comparison-title">✅ New Way (v3.0.0) <span class="badge badge-new">RECOMMENDED</span></div>
+      <pre><code>import regressionmadesimple as rms
+
+# Direct instantiation (still works!)
+model = rms.Linear(data, 'x', 'y')
+
+# Or use model registry (recommended)
+model = rms.models.Linear(data, 'x', 'y')
+
+# Using wrapper with class
+model = rms.LinearRegressionModel.fit(
+    data, 'x', 'y', 
+    model=rms.models.Linear
+)</code></pre>
+    </div>
+  </div>
+
+  <h3>Step 2: Update Model Selection in Wrapper</h3>
+
+  <div class="comparison">
+    <div class="comparison-item">
+      <div class="comparison-title">❌ Old Way (v2.x) <span class="badge badge-deprecated">DEPRECATED</span></div>
+      <pre><code># String-based model selection
+models = ['linear', 'quadratic', 'cubic']
+
+for model_name in models:
+    model = rms.LinearRegressionModel.fit(
+        data, 'x', 'y',
+        model=model_name
+    )</code></pre>
+    </div>
+
+    <div class="comparison-item">
+      <div class="comparison-title">✅ New Way (v3.0.0) <span class="badge badge-new">RECOMMENDED</span></div>
+      <pre><code># Class-based model selection
+models = [
+    rms.models.Linear,
+    rms.models.Quadratic,
+    rms.models.Cubic
+]
+
+for model_class in models:
+    model = rms.LinearRegressionModel.fit(
+        data, 'x', 'y',
+        model=model_class
+    )</code></pre>
+    </div>
+  </div>
+
+  <h3>Step 3: Take Advantage of New Features</h3>
+
+  <h4>Model Serialization <span class="badge badge-new">NEW</span></h4>
+  <pre><code>import regressionmadesimple as rms
+
+# Train and save model
+model = rms.models.Linear(data, 'x', 'y')
+model.save_model('my_model.pkl')
+
+# Load model later
+from regressionmadesimple.models import BaseModel
+loaded_model = BaseModel.load_model('my_model.pkl')
+
+# Use loaded model
+predictions = loaded_model.predict(new_data)</code></pre>
+
+  <h4>Additional Metrics <span class="badge badge-new">NEW</span></h4>
+  <pre><code># Get comprehensive model evaluation
+summary = model.summary()
+print(f"R² Score: {summary['r2_score']:.4f}")
+print(f"RMSE: {summary['rmse']:.4f}")
+print(f"MAE: {summary['mae']:.4f}")
+
+# Or access metrics directly
+print(f"R² Score: {model.r2_score()}")
+print(f"Mean Absolute Error: {model.mae()}")
+print(f"Root Mean Squared Error: {model.rmse()}")</code></pre>
+
+  <h2>⚠️ Breaking Changes</h2>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">⚠️ Deprecation Warning</div>
+    <p><b>String-based model specification is deprecated</b> and will be removed in v4.0.0.</p>
+    <p>If you use <code>model='linear'</code>, you'll see a deprecation warning. Update to <code>model=rms.models.Linear</code> to silence the warning and future-proof your code.</p>
+  </div>
+
+  <p><b>No other breaking changes!</b> All existing functionality from v2.x continues to work in v3.0.0.</p>
+
+  <h2>📚 Complete Migration Example</h2>
+
+  <h3>Before (v2.x)</h3>
+  <pre><code>import regressionmadesimple as rms
+import pandas as pd
+
+# Load data
+data = pd.read_csv('data.csv')
+
+# Fit model using string
+model = rms.LinearRegressionModel.fit(
+    data, 'x', 'y',
+    model='quadratic',
+    testsize=0.2
+)
+
+# Make predictions
+predictions = model.predict(new_data)
+
+# Get basic metrics
+summary = model.summary()
+print(f"MSE: {summary['mse']}")</code></pre>
+
+  <h3>After (v3.0.0)</h3>
+  <pre><code>import regressionmadesimple as rms
+import pandas as pd
+
+# Load data
+data = pd.read_csv('data.csv')
+
+# Fit model using class (new recommended way)
+model = rms.LinearRegressionModel.fit(
+    data, 'x', 'y',
+    model=rms.models.Quadratic,  # ✅ Class-based
+    testsize=0.2
+)
+
+# Make predictions
+predictions = model.predict(new_data)
+
+# Get comprehensive metrics (new in v3.0.0!)
+summary = model.summary()
+print(f"MSE: {summary['mse']}")
+print(f"R² Score: {summary['r2_score']:.4f}")  # ✨ NEW
+print(f"RMSE: {summary['rmse']:.4f}")          # ✨ NEW
+print(f"MAE: {summary['mae']:.4f}")            # ✨ NEW
+
+# Save model for later use (new in v3.0.0!)
+model.save_model('quadratic_model.pkl')  # ✨ NEW</code></pre>
+
+  <h2>✅ Migration Checklist</h2>
+
+  <ol>
+    <li>✅ Update imports to use <code>rms.models.*</code> for new projects</li>
+    <li>✅ Replace string-based model specification (<code>model='linear'</code>) with class-based (<code>model=rms.models.Linear</code>)</li>
+    <li>✅ Take advantage of new features:
+      <ul>
+        <li><code>save_model()</code> and <code>load_model()</code> for model persistence</li>
+        <li><code>r2_score()</code>, <code>mae()</code>, <code>rmse()</code> for better evaluation</li>
+      </ul>
+    </li>
+    <li>✅ Test your existing code (it should work with deprecation warnings)</li>
+    <li>✅ Plan complete migration before v4.0.0 (when legacy API will be removed)</li>
+  </ol>
+
+  <h2>🆘 Need Help?</h2>
+
+  <p>If you encounter any issues during migration:</p>
+  <ul>
+    <li>📖 Check the <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">GitHub README</a> for detailed examples</li>
+    <li>🐛 Report bugs on <a href="https://github.com/Unknownuserfrommars/regressionmadesimple/issues">GitHub Issues</a></li>
+    <li>💬 Ask questions in <a href="https://github.com/Unknownuserfrommars/regressionmadesimple/discussions">GitHub Discussions</a></li>
+  </ul>
+
+  <div class="callout callout-success">
+    <div class="callout-title">🎉 You're All Set!</div>
+    <p>Congratulations on upgrading to v3.0.0! Enjoy the new features and improved architecture.</p>
+    <p>Don't forget to check out the <a href="changelog.html">full changelog</a> for all the details.</p>
+  </div>
+
+  <hr style="margin: 3rem 0; border: none; border-top: 1px solid var(--border);">
+
+  <p style="text-align: center; color: var(--fg);">
+    <a href="index.html">← Back to Home</a> | 
+    <a href="changelog.html">View Changelog</a> | 
+    <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">GitHub Repository</a>
+  </p>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+    }
+
+    // Load dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark');
+    }
+  </script>
+</body>
+</html>

@@ -10,6 +10,8 @@
       --fg: #222;
       --secondary: #666;
       --card: #eee;
+      --highlight-bg: #e3f2fd;
+      --highlight-border: #2196f3;
     }
 
     body.dark {
@@ -17,6 +19,8 @@
       --fg: #f1f1f1;
       --secondary: #aaa;
       --card: #1e1e1e;
+      --highlight-bg: #1a2332;
+      --highlight-border: #2196f3;
     }
 
     body {
@@ -62,6 +66,18 @@
     .tagline {
       font-size: 1.2rem;
       color: var(--secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .version-badge {
+      display: inline-block;
+      background: #28a745;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
     }
 
     .badges {
@@ -71,16 +87,61 @@
       gap: 10px;
     }
 
+    .highlight-box {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--highlight-border);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 6px;
+    }
+
+    .highlight-box h3 {
+      margin-top: 0;
+      color: var(--fg);
+    }
+
+    .highlight-box ul {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .highlight-box li {
+      margin-bottom: 0.5rem;
+    }
+
     pre {
       background: var(--card);
       padding: 1rem;
       border-radius: 6px;
       overflow-x: auto;
+      border: 1px solid #ddd;
+    }
+
+    code {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9em;
     }
 
     .links {
       margin-top: 2rem;
       text-align: center;
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--card);
+      color: var(--fg);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: transform 0.2s;
+    }
+
+    .links a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     .toggle {
@@ -92,6 +153,35 @@
       color: var(--fg);
       font-size: 0.9rem;
     }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: var(--card);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .feature-card h4 {
+      margin-top: 0;
+      color: var(--fg);
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -99,6 +189,7 @@
     <div class="nav-links">
       <a href="index.html">🏠 Main</a>
       <a href="changelog.html">📝 Changelog</a>
+      <a href="migratetov3.html">🚀 Migration Guide</a>
       <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">📦 GitHub</a>
     </div>
     <button class="toggle" onclick="toggleDarkMode()">🌙 Dark</button>
@@ -107,6 +198,8 @@
   <div class="content">
     <h1>RegressionMadeSimple</h1>
     <p class="tagline">A minimalist machine learning backdoor to sklearn. Just import and go.</p>
+    
+    <span class="version-badge">v3.0.0 - Latest Release</span>
 
     <div class="badges">
       <img src="https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square" alt="PyPI Version">
@@ -116,20 +209,92 @@
       <img src="https://img.shields.io/pypi/pyversions/regressionmadesimple?style=flat-square" alt="Python Version">
     </div>
 
-    <div style="background: #ffeb3b; padding: 10px; text-align: center; border: 2px dashed #f57f17;">
-        🚧 Under Construction 🚧
-     </div>
+    <div class="highlight-box">
+      <h3>🎉 What's New in v3.0.0</h3>
+      <ul>
+        <li><b>Model Registry</b>: Access models via <code>rms.models.Linear</code>, <code>rms.models.Quadratic</code>, etc.</li>
+        <li><b>Model Serialization</b>: Save and load trained models with <code>save_model()</code> and <code>load_model()</code></li>
+        <li><b>Enhanced Metrics</b>: New scoring methods including <code>r2_score()</code>, <code>mae()</code>, and <code>rmse()</code></li>
+        <li><b>Better Architecture</b>: Eliminated ~60% of duplicate code through enhanced base class</li>
+        <li><b>Type Hints</b>: Comprehensive type annotations for better IDE support</li>
+      </ul>
+      <p style="margin-bottom: 0;">
+        📖 <a href="migratetov3.html" style="color: var(--highlight-border); font-weight: 600;">Read the Migration Guide →</a>
+      </p>
+    </div>
+
+    <h2>Quick Start</h2>
+    <pre><code>pip install regressionmadesimple</code></pre>
+
+    <pre><code>import regressionmadesimple as rms
+import pandas as pd
+
+# Load your data
+data = pd.DataFrame({
+    'x': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'y': [2.1, 4.2, 6.1, 8.3, 10.2, 12.1, 14.3, 16.2, 18.1, 20.3]
+})
+
+# New v3.0.0 API (recommended)
+model = rms.models.Linear(data, 'x', 'y')
+
+# Make predictions
+predictions = model.predict([[11], [12]])
+
+# Get comprehensive metrics
+summary = model.summary()
+print(f"R² Score: {summary['r2_score']:.4f}")
+print(f"RMSE: {summary['rmse']:.4f}")
+
+# Save model for later use
+model.save_model('my_model.pkl')</code></pre>
+
+    <h2>Key Features</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>🎯 Simple API</h4>
+        <p>Intuitive interface that wraps scikit-learn complexity. Perfect for rapid prototyping and learning.</p>
+      </div>
+      <div class="feature-card">
+        <h4>📊 Multiple Models</h4>
+        <p>Linear, Quadratic, Cubic regression, and custom curve fitting with flexible basis functions.</p>
+      </div>
+      <div class="feature-card">
+        <h4>💾 Model Persistence</h4>
+        <p>Save and load trained models easily with built-in serialization support.</p>
+      </div>
+      <div class="feature-card">
+        <h4>📈 Rich Metrics</h4>
+        <p>Comprehensive evaluation with R², MAE, RMSE, and MSE out of the box.</p>
+      </div>
+      <div class="feature-card">
+        <h4>🎨 Visualization</h4>
+        <p>Built-in plotting support for both Plotly and Matplotlib backends.</p>
+      </div>
+      <div class="feature-card">
+        <h4>⚙️ Configurable</h4>
+        <p>Global options system for customizing defaults across all models.</p>
+      </div>
+    </div>
 
     <div class="links">
-      <p>
-        <a href="https://pypi.org/project/regressionmadesimple">📥 View on PyPI</a>
-      </p>
+      <a href="https://pypi.org/project/regressionmadesimple">📥 View on PyPI</a>
+      <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">💻 GitHub Repository</a>
+      <a href="changelog.html">📝 Full Changelog</a>
+      <a href="migratetov3.html">🚀 Migration Guide</a>
     </div>
   </div>
 
   <script>
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+    }
+
+    // Load dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark');
     }
   </script>
 </body>
