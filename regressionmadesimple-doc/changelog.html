@@ -27,7 +27,7 @@
       font-family: 'Segoe UI', sans-serif;
       background: var(--bg);
       padding: 2rem;
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       color: var(--fg);
       transition: background 0.3s, color 0.3s;
@@ -121,33 +121,39 @@
   </nav>
 
   <h1>📦 Changelog - RegressionMadeSimple</h1>
-  <p style="margin-top:2rem">View the project on <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">GitHub</a></p>
+
+  <div class="version">Version 4.0.0 <small>(Released: 2026)</small></div>
+
+  <div class="label">💥 Breaking Changes</div>
+  <ul>
+    <li><b>String model names removed</b>: wrapper and function API calls like <code>model="linear"</code> now raise errors.</li>
+    <li><b>Class-based model specification required</b>: pass model classes such as <code>model=rms.models.Linear</code>.</li>
+  </ul>
+
+  <div class="label">✨ Highlights</div>
+  <ul>
+    <li>Model registry remains available under <code>rms.models</code> for <code>Linear</code>, <code>Quadratic</code>, <code>Cubic</code>, and <code>CustomCurve</code>.</li>
+    <li>Wrapper API aligned around typed model classes only.</li>
+    <li>Function API (<code>regressionmadesimple.api.fit</code>) aligned to class-based model input.</li>
+  </ul>
+
+  <hr>
 
   <div class="version">Version 3.0.0 <small>(Released: January 2026)</small></div>
-  
+
   <div class="label">✨ New Features</div>
   <ul>
-    <li><b>Model Registry Pattern</b>: Access models via <code>rms.models.Linear</code>, <code>rms.models.Quadratic</code>, <code>rms.models.Cubic</code>, and <code>rms.models.CustomCurve</code></li>
-    <li><b>Enhanced Base Class</b>: Completely refactored base class with common functionality for all models</li>
-    <li><b>Model Serialization</b>: Save and load trained models with <code>save_model()</code> and <code>load_model()</code> methods using joblib</li>
-    <li><b>Additional Scoring Metrics</b>: New methods including <code>r2_score()</code>, <code>mae()</code>, and <code>rmse()</code> for comprehensive model evaluation</li>
-    <li><b>Class-based Model Specification</b>: New recommended API using model classes instead of strings (e.g., <code>model=rms.models.Linear</code>)</li>
-  </ul>
-  
-  <div class="label">🔧 Improvements</div>
-  <ul>
-    <li><b>Code Reduction</b>: Eliminated ~60% of duplicate code across model classes through shared base functionality</li>
-    <li><b>Better Architecture</b>: Centralized common train/test split logic, plotting, and metric computation in BaseModel</li>
-    <li><b>Type Hints</b>: Added comprehensive type hints throughout the codebase for better IDE support</li>
-    <li><b>Improved Documentation</b>: Comprehensive README with migration guide and advanced examples</li>
-    <li><b>Better Organization</b>: Models now live in dedicated <code>models/</code> submodule for cleaner structure</li>
+    <li><b>Model Registry Pattern</b>: Access models via <code>rms.models.Linear</code>, <code>rms.models.Quadratic</code>, <code>rms.models.Cubic</code>, and <code>rms.models.CustomCurve</code>.</li>
+    <li><b>Enhanced Base Class</b>: Refactored base class with common functionality for all models.</li>
+    <li><b>Model Serialization</b>: Save/load trained models with <code>save_model()</code> and <code>load_model()</code>.</li>
+    <li><b>Additional Scoring Metrics</b>: <code>r2_score()</code>, <code>mae()</code>, and <code>rmse()</code>.</li>
   </ul>
 
-  <div class="label">🔄 API Changes</div>
+  <div class="label">🔄 API Notes</div>
   <ul>
-    <li><b>New Recommended API</b>: Use class-based model specification: <code>model=rms.models.Linear</code> instead of <code>model='linear'</code></li>
-    <li><b>Backward Compatible</b>: Old string-based API still works but shows deprecation warnings</li>
-    <li><b>Migration Required</b>: String-based model specification will be removed in v4.0.0. See <a href="migratetov3.html">Migration Guide to v3.0.0</a></li>
+    <li>v3 introduced class-based model selection as the recommended path.</li>
+    <li>v4 completed that migration by removing string-based model selection.</li>
+    <li>See <a href="migratetov3.html">Migration Guide to v3.0.0</a> for legacy transition details.</li>
   </ul>
 
   <hr>
@@ -155,84 +161,7 @@
   <div class="version">Version 2.0.0 <small>(Released: August 2025)</small></div>
   <div class="label">✨ New Features</div>
   <ul>
-    <li>Rewrote the whole package. More info please consult the <a href='upgradefromv1tov2.html'>Migration Guide</a> and more notes.</li>
-  </ul>
-
-  <hr>
-  
-  <div class="version">Version 1.4.1 <small>(Released: May 2025)</small></div>
-
-  <div class="label">✨ New Features</div>
-  <ul>
-    <li>Added <b>plotting compatibility</b> for <code>Matplotlib</code></li>
-    <li>Added a early <b>Logging</b> class (but did not make any log infos in the actual code (TODO))</li>
-  </ul>
-  
-  <div class="label">🔧 Improvements</div>
-  <ul>
-    <li>Small code improvements to <code>ComplexCurves</code>. (Still developing, use at your own risk)</li>
-  </ul>
-  <hr>
-
-  <div class="version">Version 1.4.0 <small>(Released: April 2025)</small></div>
-
-  <div class="label">✨ New Features</div>
-  <ul>
-    <li>Added support for <code>ComplexCurves</code> (early dev version)</li>
-  </ul>
-
-  <hr>
-  
-  <div class="version">Version 1.3.0 <small>(Released: April 2025)</small></div>
-
-  <div class="label">✨ New Features</div>
-  <ul>
-    <li>Added <code>Quadratic</code> and <code>Cubic</code> regression models with clean, user-friendly APIs</li>
-    <li>Introduced <code>wrapper.py</code> with <code>LinearRegression.fit(...)</code> interface</li>
-    <li>Models support both auto and pre-split data with RMS-style constructor args</li>
-  </ul>
-
-  <div class="label">🔧 Improvements</div>
-  <ul>
-    <li>Refined package structure for better modularity and clarity</li>
-    <li>Updated <code>__init__.py</code> to expose all new models and wrapper interfaces</li>
-    <li>Reinforced <code>options</code> system to support future model configurations</li>
-  </ul>
-
-  <hr>
-  
-  <div class="version">Version 1.2.0 <small>(Released: April 2025)</small></div>
-
-  <div class="label">✨ New Features</div>
-  <ul>
-    <li>🔧 Introduced <code>rms.options</code> for global configuration using <code>SimpleNamespace</code></li>
-    <li>🧠 Added support for <code>.save()</code>, <code>.load()</code>, and <code>.reset()</code> for RMS options</li>
-    <li>🧪 Configurable <code>Linear</code> constructor: honors <code>rms.options.training</code> + accepts pre-split data</li>
-  </ul>
-
-  <div class="label">🔧 Improvements</div>
-  <ul>
-    <li>Internal logic streamlined to use config fallbacks</li>
-    <li>Better defaults, simplified structure for future models</li>
-    <li>Updated <code>__init__.py</code> to expose config functions</li>
-  </ul>
-  
-  <hr>
-  
-  <div class="version">Version 1.1.1 <small>(Released: March 2025)</small></div>
-  
-  <div class="label">✨ New Features</div>
-  <ul>
-    <li>Added <code>.summary()</code> method to <code>Linear</code> model</li>
-    <li>Support for pre-split data in <code>Linear</code> constructor via <code>X_train</code>, <code>y_train</code>, <code>X_test</code>, <code>y_test</code></li>
-    <li>Cleaner, more flexible <code>preworks</code> utilities</li>
-  </ul>
-  
-  <div class="label">🔧 Improvements</div>
-  <ul>
-    <li>Streamlined logic in <code>Linear</code> and <code>preworks</code> using real-world usage experience</li>
-    <li>Renamed/reorganized function names for clarity</li>
-    <li>Improved error handling for <code>.plot()</code> and <code>.mse()</code> when test data is unavailable</li>
+    <li>Major package rewrite. See the <a href="upgradefromv1tov2.html">v1 → v2 Migration Guide</a>.</li>
   </ul>
 
   <script>
@@ -242,7 +171,6 @@
       localStorage.setItem('darkMode', isDark);
     }
 
-    // Load dark mode preference
     if (localStorage.getItem('darkMode') === 'true') {
       document.body.classList.add('dark');
     }
