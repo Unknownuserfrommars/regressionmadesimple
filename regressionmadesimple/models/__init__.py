@@ -1,5 +1,5 @@
 """
-RegressionMadeSimple v3.0.0 - Models Module
+RegressionMadeSimple v4.0.0 - Models Module
 
 This module provides a registry of regression models that can be used
 with the new class-based API.

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="regressionmadesimple",
-    version="3.0.0",
+    version="4.0.0",
     description="Minimalist machine learning toolkit that wraps `scikit-learn` for quick prototyping. Just `import rms` and go.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

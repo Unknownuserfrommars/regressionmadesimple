@@ -1,4 +1,4 @@
-# RegressionMadeSimple v3.0.0 🚀
+# RegressionMadeSimple v4.0.0 🚀
 
 A minimalist machine learning toolkit that wraps `scikit-learn` for quick prototyping. Just `import regressionmadesimple as rms` and go!
 
@@ -6,9 +6,9 @@ A minimalist machine learning toolkit that wraps `scikit-learn` for quick protot
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/regressionmadesimple?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=GREEN&left_text=Total+Downloads)](https://pepy.tech/projects/regressionmadesimple)
 
-## What's New in v3.0.0 🎉
+## What's New in v4.0.0 🎉
 
-RegressionMadeSimple v3.0.0 brings major improvements to make your regression workflow even simpler and more powerful:
+RegressionMadeSimple v4.0.0 finalizes the class-based API and removes deprecated legacy model selection to keep the package simpler and more reliable:
 
 ### 🏗️ Model Registry Pattern
 - **New API**: Access models via `rms.models.Linear`, `rms.models.Quadratic`, `rms.models.Cubic`
@@ -21,10 +21,10 @@ RegressionMadeSimple v3.0.0 brings major improvements to make your regression wo
 - **Additional Metrics**: New scoring methods including `r2_score()`, `mae()`, `rmse()`
 - **Shared Logic**: Unified train/test splitting and plotting functionality
 
-### 🔄 Backward Compatibility
-- **Legacy Support**: Old API still works (with deprecation warnings)
-- **Smooth Migration**: Gradual transition path to new API
-- **No Breaking Changes**: Existing code continues to work
+### ⚠️ Breaking Changes in v4.0.0
+- **String model names removed**: `model="linear"` style calls are no longer supported in wrapper/function APIs
+- **Class-based model selection required**: use `model=rms.models.Linear` (or `Quadratic`, `Cubic`)
+- **Legacy top-level model modules removed**: old duplicate internals were deleted to prevent drift
 
 ---
 
@@ -46,7 +46,7 @@ pip install -e .
 
 ## Quick Start
 
-### Basic Usage (v3.0.0 API - Recommended)
+### Basic Usage (v4.0.0 API)
 
 ```python
 import regressionmadesimple as rms
@@ -78,33 +78,27 @@ model.save_model('my_linear_model.pkl')
 loaded_model = rms.models.BaseModel.load_model('my_linear_model.pkl')
 ```
 
-### Using the Wrapper (Both APIs Supported)
+### Using the Wrapper (Class-based API only in v4.0.0)
 
 ```python
-# New v3.0.0 API (recommended)
+# v4.0.0 API
 model = rms.LinearRegressionModel.fit(
     data, 'x', 'y', 
     model=rms.models.Quadratic,
     testsize=0.2
 )
 
-# Legacy API (deprecated, shows warning)
-model = rms.LinearRegressionModel.fit(
-    data, 'x', 'y', 
-    model='quadratic',  # String-based (deprecated)
-    testsize=0.2
-)
 ```
 
 ---
 
-## Migration Guide: v2.x → v3.0.0
+## Migration Guide: v3.x → v4.0.0
 
 ### What Changed?
 
 1. **Model Access**: Models now accessible via `rms.models.*`
 2. **Enhanced Features**: New serialization and scoring methods
-3. **Deprecation Warnings**: String-based model specification shows warnings
+3. **Deprecated paths removed**: String-based model specification is no longer accepted
 
 ### Migration Examples
 
@@ -119,14 +113,14 @@ model = rms.Linear(data, 'x', 'y')
 model = rms.LinearRegressionModel.fit(data, 'x', 'y', model='linear')
 ```
 
-#### After (v3.0.0 - Recommended)
+#### After (v4.0.0)
 ```python
 import regressionmadesimple as rms
 
-# Direct instantiation (still works!)
-model = rms.Linear(data, 'x', 'y')  # Backward compatible
+# Direct instantiation still works
+model = rms.Linear(data, 'x', 'y')
 
-# Or use new model registry (recommended)
+# Or use model registry
 model = rms.models.Linear(data, 'x', 'y')
 
 # Wrapper with class
@@ -136,10 +130,10 @@ model = rms.LinearRegressionModel.fit(data, 'x', 'y', model=rms.models.Linear)
 ### Migration Checklist
 
 - [ ] Update imports to use `rms.models.*` for new projects
-- [ ] Replace string-based model specification with class-based
-- [ ] Take advantage of new features: `save_model()`, `r2_score()`, `mae()`, `rmse()`
-- [ ] Test existing code (it should still work with deprecation warnings)
-- [ ] Plan migration before v4.0.0 (when legacy API will be removed)
+- [ ] Replace string-based model specification with class-based (`model=rms.models.Linear`)
+- [ ] Update wrapper calls to pass model classes only
+- [ ] If using `regressionmadesimple.api.fit`, pass `model` as a model class
+- [ ] Validate function API inputs use single-feature X until multi-feature support is added
 
 ---
 
@@ -182,7 +176,7 @@ result = model.predict([[5.5]])
 results = model.predict([[5.5], [6.0], [6.5]])
 ```
 
-#### 3. Model Evaluation (New in v3.0.0!)
+#### 3. Model Evaluation
 ```python
 # Get comprehensive summary
 summary = model.summary()
@@ -204,7 +198,7 @@ print(f"Root Mean Squared Error: {model.rmse()}")
 print(f"Mean Squared Error: {model.mse()}")
 ```
 
-#### 4. Model Serialization (New in v3.0.0!)
+#### 4. Model Serialization
 ```python
 # Save trained model
 model.save_model('models/my_regression_model.pkl')
@@ -227,6 +221,29 @@ fig.show()  # For Plotly backend
 fig = model.plot_predict(X_new, y_new)
 fig.show()
 ```
+
+
+#### 6. Function-style API (v4.0.0)
+```python
+from regressionmadesimple.api import fit
+import regressionmadesimple as rms
+import numpy as np
+
+X = np.array([[1], [2], [3], [4], [5]], dtype=float)
+y = np.array([2.1, 4.0, 6.2, 7.9, 10.1], dtype=float)
+
+model, results = fit(
+    X, y,
+    model=rms.models.Linear,  # class-based model selection
+    split_ratio=[8, 2],
+    random_state=42
+)
+
+print(results["r2_score"])
+print(results["summary"])
+```
+
+> Note: the function API currently supports single-feature `X` only.
 
 ### Configuration Options
 
