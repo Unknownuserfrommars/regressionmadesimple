@@ -48,7 +48,7 @@ class Cubic(BaseModel):
         # Use options if parameters not provided
         testsize = testsize if testsize is not None else options.training.test_size
         randomstate = randomstate if randomstate is not None else options.training.random_state
-        train_test_split = train_test_split if train_test_split is not None else options.quadratic.auto_split
+        train_test_split = train_test_split if train_test_split is not None else options.cubic.auto_split
         
         # Initialize base class
         super().__init__(

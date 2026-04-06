@@ -1,5 +1,5 @@
 """
-RegressionMadeSimple v3.0.0
+RegressionMadeSimple v4.0.0
 
 A minimalist machine learning toolkit that wraps scikit-learn for quick prototyping.
 Just `import regressionmadesimple as rms` and go!
@@ -43,7 +43,7 @@ from .utils_preworks import Preworks, Logger
 from .options import options, save_options, load_options, reset_options
 from .wrapper import LinearRegressionModel
 
-__version__ = "3.0.0"
+__version__ = "4.0.0"
 
 __all__ = [
     # Models module (new in v3.0.0)
