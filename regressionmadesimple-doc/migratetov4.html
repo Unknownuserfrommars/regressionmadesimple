@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migration Guide to v4.0.0 - RegressionMadeSimple</title>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --fg: #333;
+      --heading: #222;
+      --link: #0366d6;
+      --card: #fff;
+      --border: #ddd;
+      --code-bg: #f6f8fa;
+      --warning-bg: #fff3cd;
+      --warning-border: #ffc107;
+      --success-bg: #d4edda;
+      --success-border: #28a745;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --fg: #e0e0e0;
+      --heading: #f1f1f1;
+      --link: #58a6ff;
+      --card: #1e1e1e;
+      --border: #333;
+      --code-bg: #2d2d2d;
+      --warning-bg: #3d3520;
+      --success-bg: #1e3a2e;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+      color: var(--fg);
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
+    }
+
+    nav {
+      background: var(--card);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      border-radius: 6px;
+    }
+
+    .nav-links a {
+      margin-right: 1rem;
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover { text-decoration: underline; }
+
+    .toggle {
+      cursor: pointer;
+      background: none;
+      border: 1px solid var(--fg);
+      border-radius: 6px;
+      padding: 0.25rem 0.75rem;
+      color: var(--fg);
+      font-size: 0.9rem;
+    }
+
+    h1, h2, h3 { color: var(--heading); }
+
+    code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .callout {
+      border-left: 4px solid;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+    }
+
+    .warning { background: var(--warning-bg); border-color: var(--warning-border); }
+    .success { background: var(--success-bg); border-color: var(--success-border); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-links">
+      <a href="index.html">🏠 Main</a>
+      <a href="changelog.html">📝 Changelog</a>
+      <a href="migratetov3.html">🚀 Migrate to v3</a>
+      <a href="migratetov4.html">🧭 Migrate to v4</a>
+      <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">📦 GitHub</a>
+    </div>
+    <button class="toggle" onclick="toggleDarkMode()">🌙 Dark</button>
+  </nav>
+
+  <h1>Migration Guide: v3.x → v4.0.0</h1>
+
+  <div class="callout warning">
+    <strong>Breaking change:</strong> in v4, string model names were removed from wrapper/function APIs.
+    Use model classes like <code>rms.models.Linear</code>.
+  </div>
+
+  <h2>What changed?</h2>
+  <ul>
+    <li><strong>Removed:</strong> <code>model="linear"</code>, <code>"quadratic"</code>, <code>"cubic"</code> in wrapper/function calls.</li>
+    <li><strong>Required:</strong> pass classes such as <code>model=rms.models.Linear</code>.</li>
+    <li><strong>No change:</strong> direct class instantiation remains valid (<code>rms.Linear(...)</code> and <code>rms.models.Linear(...)</code>).</li>
+  </ul>
+
+  <h2>Before and after</h2>
+  <h3>Wrapper API</h3>
+  <pre><code># v3-style (no longer valid in v4)
+model = rms.LinearRegressionModel.fit(data, "x", "y", model="linear")
+
+# v4-style (required)
+model = rms.LinearRegressionModel.fit(data, "x", "y", model=rms.models.Linear)</code></pre>
+
+  <h3>Function API</h3>
+  <pre><code>from regressionmadesimple.api import fit
+
+# v3-style (no longer valid in v4)
+model, results = fit(X, y, model="quadratic")
+
+# v4-style (required)
+model, results = fit(X, y, model=rms.models.Quadratic)</code></pre>
+
+  <h2>Migration checklist</h2>
+  <ul>
+    <li>Replace string model values with model classes in wrapper calls.</li>
+    <li>Replace string model values with model classes in function API calls.</li>
+    <li>Run your tests and confirm no <code>TypeError</code> from model argument usage.</li>
+  </ul>
+
+  <div class="callout success">
+    If you were already using <code>rms.models.*</code> classes in v3, migration to v4 should be minimal.
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark');
+    }
+  </script>
+</body>
+</html>

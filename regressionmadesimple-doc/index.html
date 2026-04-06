@@ -53,7 +53,7 @@
     }
 
     .content {
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       padding: 2rem;
     }
@@ -80,33 +80,12 @@
       margin-bottom: 1rem;
     }
 
-    .badges {
-      margin-top: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
     .highlight-box {
       background: var(--highlight-bg);
       border-left: 4px solid var(--highlight-border);
       padding: 1.5rem;
       margin: 2rem 0;
       border-radius: 6px;
-    }
-
-    .highlight-box h3 {
-      margin-top: 0;
-      color: var(--fg);
-    }
-
-    .highlight-box ul {
-      margin: 0.5rem 0;
-      padding-left: 1.5rem;
-    }
-
-    .highlight-box li {
-      margin-bottom: 0.5rem;
     }
 
     pre {
@@ -168,11 +147,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    .feature-card h4 {
-      margin-top: 0;
-      color: var(--fg);
-    }
-
     @media (max-width: 768px) {
       .content {
         padding: 1rem;
@@ -189,7 +163,8 @@
     <div class="nav-links">
       <a href="index.html">🏠 Main</a>
       <a href="changelog.html">📝 Changelog</a>
-      <a href="migratetov3.html">🚀 Migration Guide</a>
+      <a href="migratetov3.html">🚀 Migration Guide (to v3)</a>
+      <a href="migratetov4.html">🧭 Migration Guide (to v4)</a>
       <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">📦 GitHub</a>
     </div>
     <button class="toggle" onclick="toggleDarkMode()">🌙 Dark</button>
@@ -197,30 +172,19 @@
 
   <div class="content">
     <h1>RegressionMadeSimple</h1>
-    <p class="tagline">A minimalist machine learning backdoor to sklearn. Just import and go.</p>
-    
-    <span class="version-badge">v3.0.0 - Latest Release</span>
+    <p class="tagline">A minimalist machine learning toolkit on top of scikit-learn.</p>
 
-    <div class="badges">
-      <img src="https://img.shields.io/pypi/v/regressionmadesimple?style=flat-square" alt="PyPI Version">
-      <a href="https://pepy.tech/projects/regressionmadesimple"><img src="https://static.pepy.tech/personalized-badge/regressionmadesimple?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=GREEN&left_text=Total+Downloads" alt="PyPI Downloads (Total)"></a>
-      <img src="https://img.shields.io/github/stars/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="GitHub Stars">
-      <img src="https://img.shields.io/github/license/Unknownuserfrommars/regressionmadesimple?style=flat-square" alt="License">
-      <img src="https://img.shields.io/pypi/pyversions/regressionmadesimple?style=flat-square" alt="Python Version">
-    </div>
+    <span class="version-badge">v4.0.0 - Latest Release</span>
 
     <div class="highlight-box">
-      <h3>🎉 What's New in v3.0.0</h3>
+      <h3>🎉 What's New in v4.0.0</h3>
       <ul>
-        <li><b>Model Registry</b>: Access models via <code>rms.models.Linear</code>, <code>rms.models.Quadratic</code>, etc.</li>
-        <li><b>Model Serialization</b>: Save and load trained models with <code>save_model()</code> and <code>load_model()</code></li>
-        <li><b>Enhanced Metrics</b>: New scoring methods including <code>r2_score()</code>, <code>mae()</code>, and <code>rmse()</code></li>
-        <li><b>Better Architecture</b>: Eliminated ~60% of duplicate code through enhanced base class</li>
-        <li><b>Type Hints</b>: Comprehensive type annotations for better IDE support</li>
+        <li><b>Class-based model selection is now required</b> in wrapper/function APIs.</li>
+        <li><b>String model names removed</b> (for example, <code>model="linear"</code> is no longer valid).</li>
+        <li><b>Model registry API</b> available via <code>rms.models.Linear</code>, <code>Quadratic</code>, and <code>Cubic</code>.</li>
+        <li><b>Built-in metrics and serialization</b> with <code>summary()</code>, <code>r2_score()</code>, <code>mae()</code>, <code>rmse()</code>, <code>save_model()</code>, and <code>load_model()</code>.</li>
       </ul>
-      <p style="margin-bottom: 0;">
-        📖 <a href="migratetov3.html" style="color: var(--highlight-border); font-weight: 600;">Read the Migration Guide →</a>
-      </p>
+      <p style="margin-bottom: 0;">📖 <a href="migratetov4.html" style="color: var(--highlight-border); font-weight: 600;">Read the v4 Migration Guide →</a></p>
     </div>
 
     <h2>Quick Start</h2>
@@ -229,51 +193,69 @@
     <pre><code>import regressionmadesimple as rms
 import pandas as pd
 
-# Load your data
+# Load data
 data = pd.DataFrame({
-    'x': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'y': [2.1, 4.2, 6.1, 8.3, 10.2, 12.1, 14.3, 16.2, 18.1, 20.3]
+    "x": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "y": [2.1, 4.2, 6.1, 8.3, 10.2, 12.1, 14.3, 16.2, 18.1, 20.3]
 })
 
-# New v3.0.0 API (recommended)
-model = rms.models.Linear(data, 'x', 'y')
+# Recommended API
+model = rms.models.Linear(data, "x", "y")
 
-# Make predictions
+# Predictions
 predictions = model.predict([[11], [12]])
 
-# Get comprehensive metrics
+# Metrics
 summary = model.summary()
-print(f"R² Score: {summary['r2_score']:.4f}")
-print(f"RMSE: {summary['rmse']:.4f}")
+print(summary["r2_score"])
+print(summary["rmse"])
 
-# Save model for later use
-model.save_model('my_model.pkl')</code></pre>
+# Save model
+model.save_model("my_model.pkl")</code></pre>
+
+    <h2>Wrapper API (v4)</h2>
+    <pre><code>model = rms.LinearRegressionModel.fit(
+    data,
+    "x",
+    "y",
+    model=rms.models.Quadratic,
+    testsize=0.2
+)</code></pre>
+
+    <h2>Function API (v4)</h2>
+    <pre><code>from regressionmadesimple.api import fit
+import numpy as np
+
+X = np.array([[1], [2], [3], [4], [5]], dtype=float)
+y = np.array([2.1, 4.0, 6.2, 7.9, 10.1], dtype=float)
+
+model, results = fit(
+    X,
+    y,
+    model=rms.models.Linear,
+    split_ratio=[8, 2],
+    random_state=42,
+)
+
+print(results["r2_score"])</code></pre>
 
     <h2>Key Features</h2>
     <div class="feature-grid">
       <div class="feature-card">
         <h4>🎯 Simple API</h4>
-        <p>Intuitive interface that wraps scikit-learn complexity. Perfect for rapid prototyping and learning.</p>
+        <p>Thin wrapper around scikit-learn designed for quick experiments and learning.</p>
       </div>
       <div class="feature-card">
         <h4>📊 Multiple Models</h4>
-        <p>Linear, Quadratic, Cubic regression, and custom curve fitting with flexible basis functions.</p>
+        <p>Linear, quadratic, cubic, and custom curve support.</p>
       </div>
       <div class="feature-card">
         <h4>💾 Model Persistence</h4>
-        <p>Save and load trained models easily with built-in serialization support.</p>
+        <p>Persist fitted models with joblib-based save/load helpers.</p>
       </div>
       <div class="feature-card">
         <h4>📈 Rich Metrics</h4>
-        <p>Comprehensive evaluation with R², MAE, RMSE, and MSE out of the box.</p>
-      </div>
-      <div class="feature-card">
-        <h4>🎨 Visualization</h4>
-        <p>Built-in plotting support for both Plotly and Matplotlib backends.</p>
-      </div>
-      <div class="feature-card">
-        <h4>⚙️ Configurable</h4>
-        <p>Global options system for customizing defaults across all models.</p>
+        <p>Evaluate with MSE, RMSE, MAE, and R².</p>
       </div>
     </div>
 
@@ -281,7 +263,8 @@ model.save_model('my_model.pkl')</code></pre>
       <a href="https://pypi.org/project/regressionmadesimple">📥 View on PyPI</a>
       <a href="https://github.com/Unknownuserfrommars/regressionmadesimple">💻 GitHub Repository</a>
       <a href="changelog.html">📝 Full Changelog</a>
-      <a href="migratetov3.html">🚀 Migration Guide</a>
+      <a href="migratetov3.html">🚀 Migration Guide (to v3)</a>
+      <a href="migratetov4.html">🧭 Migration Guide (to v4)</a>
     </div>
   </div>
 
@@ -292,7 +275,6 @@ model.save_model('my_model.pkl')</code></pre>
       localStorage.setItem('darkMode', isDark);
     }
 
-    // Load dark mode preference
     if (localStorage.getItem('darkMode') === 'true') {
       document.body.classList.add('dark');
     }
